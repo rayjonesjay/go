@@ -8,7 +8,7 @@ Ascii-art is a program that receives a `string` as an argument and displays the 
 - [2] ramuiruri
 - [3] dochiel
 
-## Usage: how to run
+## Usage: how to use the program
 ```
 bash
 $ go run main.go "message as string"
