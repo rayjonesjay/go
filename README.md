@@ -4,13 +4,15 @@ Ascii-art is a program that receives a `string` as an argument and displays the 
 
 ## Authors
 
-- [x] najwang
-- [x] ramuiruri
-- [x] dochiel
+- [1] najwang
+- [2] ramuiruri
+- [3] dochiel
 
 ## Usage: how to run
-
-
+```
+bash
+$ go run main.go "message as string"
+```
 ## Implementation details: algorithm
 
 
