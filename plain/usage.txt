@@ -1,0 +1,14 @@
+Usage:
+    ascii TEXT
+    ascii TEXT STYLE
+    ascii (TEXT STYLE)...
+
+Display ASCII graphics
+
+TEXT:
+    Text whose graphics is to be displayed
+
+STYLE:
+    The banner style to use to draw the given text
+
+For more details see https://learn.zone01kisumu.ke/git/najwang/ascii-art
