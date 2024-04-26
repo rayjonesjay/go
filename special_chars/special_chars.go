@@ -18,6 +18,13 @@ func SlashB(s string) string {
 			result += string(runes[i])
 		}
 	}
+
+	// when \b is at the end of the string, ignore
+	for i, v := range result {
+		if v == '\\' && result[i+1] == 'b' {
+			result = result[:len(result)-2]
+		}
+	}
 	return result
 }
 
