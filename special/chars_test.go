@@ -18,3 +18,10 @@ func TestSlashB(t *testing.T) {
 		t.Error("Expected hellther world got", output3)
 	}
 }
+
+func TestSlashZero(t *testing.T) {
+	output := SlashZero("hey\\0there\\0 our world \\0")
+	if output != "heythere our world " {
+		t.Error("Expected heythere our world  got", output)
+	}
+}
