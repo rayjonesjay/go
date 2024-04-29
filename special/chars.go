@@ -1,4 +1,4 @@
-package special_chars
+package special
 
 import "strings"
 
@@ -53,6 +53,8 @@ func SlashR(s string) string {
 	arr := strings.Split(s, "\\r")
 
 	for i := 0; i < len(arr); i++ {
+		// check if the string after \r is longer than the string before
+		// if so, update the string before to be the string after \r
 		if i+1 < len(arr) && len(arr[i+1]) > len(arr[i]) {
 			if len(result) > 0 {
 				result = ""
@@ -61,9 +63,12 @@ func SlashR(s string) string {
 		}
 
 		if i+1 < len(arr) {
+			// if result is empty, update it to the string at the current index
 			if len(result) < 1 {
 				result = arr[i]
 			}
+
+			// prepend the string after \r as you overwrite to the string before
 			result = arr[i+1] + result[len(arr[i+1]):]
 		}
 	}
