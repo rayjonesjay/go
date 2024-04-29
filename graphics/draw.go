@@ -9,7 +9,7 @@ import (
 )
 
 // This function takes the name of a file in string format, reads the ascii art inside the file, and maps each ascii art to its rune value
-func ReadBanner(fileName string) map[rune][8]string {
+func ReadBanner(fileName string) map[rune][]string {
 	link1 := "https://learn.zone01kisumu.ke/git/root/public/src/branch/master/subjects/ascii-art/standard.txt"
 	link2 := "https://learn.zone01kisumu.ke/git/root/public/src/branch/master/subjects/ascii-art/shadow.txt"
 	link3 := "https://learn.zone01kisumu.ke/git/root/public/src/branch/master/subjects/ascii-art/thinkertoy.txt"
@@ -26,14 +26,14 @@ func ReadBanner(fileName string) map[rune][8]string {
 	// create a scanner object
 	scan := bufio.NewScanner(file)
 	// create ascii art map to store the character and its equivalent ascii art
-	asciiMap := make(map[rune][8]string)
+	asciiMap := make(map[rune][]string)
 	// i is our loop variable and it starts from 32 which is space character
 	for i := 32; i <= 126; i++ {
 		currentRune := rune(i)
 		// skip one line
 		scan.Scan()
 		// array to store the current ascii art
-		var currentArt [8]string
+		var currentArt []string = make([]string, 8)
 		// read the next 8 lines
 		for count := 0; count < 8; count++ {
 			// if we reach the end of the file prematurely stop scanning
