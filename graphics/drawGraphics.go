@@ -8,17 +8,7 @@ import (
 	"strings"
 )
 
-func DisplayArt(asciiMap map[rune][8]string){
-	letter := 'a'
-	for key, value := range asciiMap{
-		if key == letter {
-			for _, val := range value {
-				fmt.Println(val)
-			}
-		}
-	}
-}
-// 
+// This function takes the name of a file in string format, reads the ascii art inside the file, and maps each ascii art to its rune value
 func ReadBanner(fileName string) map[rune][8]string {
 	link1 := "https://learn.zone01kisumu.ke/git/root/public/src/branch/master/subjects/ascii-art/standard.txt"
 	link2 := "https://learn.zone01kisumu.ke/git/root/public/src/branch/master/subjects/ascii-art/shadow.txt"
