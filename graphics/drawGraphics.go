@@ -1,4 +1,5 @@
-package main
+package graphics
+
 import (
 	"bufio"
 	"fmt"
@@ -6,28 +7,8 @@ import (
 	"os"
 	"strings"
 )
-func main() {
-	args := os.Args[1:]
-	var bannerFile string = "standarsd.txt"
-	if len(args) == 2 {
-		bannerFile = args[2]
-	}
-	if len(args) < 1 || len(args) > 3 {
-		fmt.Fprintln(os.Stderr, "Usage: go run main.go \"message\"")
-		os.Exit(2)
-	}
-	asciiMap := readBanner(bannerFile)
-	// for key, value := range asciiMap {
-	// 	fmt.Printf("%v\n", key)
-	// 	for _, val := range value {
-	// 		fmt.Println(val)
-	// 	}
-	// }
-	displayArt(asciiMap)
-	// letter := 'A'
-	// fmt.Printf("%v\n", letter, )
-}
-func displayArt(asciiMap map[rune][8]string){
+
+func DisplayArt(asciiMap map[rune][8]string){
 	letter := 'a'
 	for key, value := range asciiMap{
 		if key == letter {
@@ -38,7 +19,7 @@ func displayArt(asciiMap map[rune][8]string){
 	}
 }
 // 
-func readBanner(fileName string) map[rune][8]string {
+func ReadBanner(fileName string) map[rune][8]string {
 	link1 := "https://learn.zone01kisumu.ke/git/root/public/src/branch/master/subjects/ascii-art/standard.txt"
 	link2 := "https://learn.zone01kisumu.ke/git/root/public/src/branch/master/subjects/ascii-art/shadow.txt"
 	link3 := "https://learn.zone01kisumu.ke/git/root/public/src/branch/master/subjects/ascii-art/thinkertoy.txt"
