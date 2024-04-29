@@ -1,5 +1,7 @@
 package special_chars
 
+import "strings"
+
 // handling \b
 func SlashB(s string) string {
 	result := ""
@@ -44,6 +46,29 @@ func SlashZero(s string) string {
 	}
 	return result
 }
+
 // handling \r
+func SlashR(s string) string {
+	result := ""
+	arr := strings.Split(s, "\\r")
+
+	for i := 0; i < len(arr); i++ {
+		if i+1 < len(arr) && len(arr[i+1]) > len(arr[i]) {
+			if len(result) > 0 {
+				result = ""
+			}
+			result += arr[i+1]
+		}
+
+		if i+1 < len(arr) {
+			if len(result) < 1 {
+				result = arr[i]
+			}
+			result = arr[i+1] + result[len(arr[i+1]):]
+		}
+	}
+	return result
+}
+
 // handling \f
 // handling \v
