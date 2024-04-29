@@ -1,9 +1,11 @@
 package main
 
 import (
-	"ascii/args"
 	"fmt"
 	"os"
+
+	"ascii/args"
+	"ascii/graphics"
 )
 
 func main() {
@@ -12,7 +14,29 @@ func main() {
 		// nothing to draw, user error
 		printUsage()
 	}
-	draw(draws)
+	m := graphics.ReadBanner("banners/standard.txt")
+	var result [][]string
+	for _, di := range draws {
+		text := di.Text
+		for _, char := range text {
+			result = append(result, m[char])
+		}
+	}
+
+	for i := 0; i < 8; i++ {
+		for _, element := range result {
+			fmt.Print(element[i])
+		}
+		fmt.Println()
+	}
+
+	// for _, element := range result {
+	// 	for _, value := range element {
+	// 		fmt.Println(value)
+	// 	}
+	// }
+
+	// draw(draws)
 }
 
 // Prints the program usage to the standard output, then exits the program with a non-zero return code

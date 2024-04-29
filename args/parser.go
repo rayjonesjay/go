@@ -8,8 +8,8 @@ const (
 
 // DrawInfo holds the text to be drawn, and with which style it is to be drawn
 type DrawInfo struct {
-	text  string
-	style string
+	Text  string
+	Style string
 }
 
 // Parse Given commandline arguments, excluding the program name, returns a list of all the extracted
@@ -23,7 +23,7 @@ func Parse(args []string) []DrawInfo {
 	} else if l == 1 {
 		// Program received some text to be printed, use the standard banner to print the ASCII-ART
 		text := args[0]
-		return []DrawInfo{{text: text, style: Standard}}
+		return []DrawInfo{{Text: text, Style: Standard}}
 	} else {
 		// Program received a series of texts to be printed, with banner style specified for consecutive texts
 		var out []DrawInfo
@@ -34,7 +34,7 @@ func Parse(args []string) []DrawInfo {
 			if j < l {
 				style = args[j]
 			}
-			out = append(out, DrawInfo{text: text, style: style})
+			out = append(out, DrawInfo{Text: text, Style: style})
 		}
 		return out
 	}

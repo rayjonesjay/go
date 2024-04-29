@@ -6,7 +6,7 @@ import (
 	"log"
 	"os"
 	"strings"
-)
+) 
 
 // This function takes the name of a file in string format, reads the ascii art inside the file, and maps each ascii art to its rune value
 func ReadBanner(fileName string) map[rune][]string {
@@ -18,7 +18,7 @@ func ReadBanner(fileName string) map[rune][]string {
 	if possibleError != nil {
 		if os.IsNotExist(possibleError) {
 			fmt.Fprintf(os.Stderr, "\"%s\" file does not exist: download the required files from the links below: \n\t%s\n\t%s\n\t%s\n", fileName, link1, link2, link3)
-			os.Exit(2)
+			os.Exit(1) //file not found exit code
 		}
 		log.Fatalf("Failed to open banner file: \"%s\"", fileName)
 	}
@@ -48,6 +48,27 @@ func ReadBanner(fileName string) map[rune][]string {
 			}
 		}
 		asciiMap[currentRune] = currentArt
+
+
+		// //handle \t
+		// asciiMap[rune(9)] = []string {
+		// 	asciiMap[32][0]+asciiMap[32][0]+asciiMap[32][0]+asciiMap[32][0],
+		// 	asciiMap[32][0]+asciiMap[32][0]+asciiMap[32][0]+asciiMap[32][0],
+		// 	asciiMap[32][0]+asciiMap[32][0]+asciiMap[32][0]+asciiMap[32][0],
+		// 	asciiMap[32][0]+asciiMap[32][0]+asciiMap[32][0]+asciiMap[32][0],
+		// 	asciiMap[32][0]+asciiMap[32][0]+asciiMap[32][0]+asciiMap[32][0],
+		// 	asciiMap[32][0]+asciiMap[32][0]+asciiMap[32][0]+asciiMap[32][0],
+		// 	asciiMap[32][0]+asciiMap[32][0]+asciiMap[32][0]+asciiMap[32][0],
+		// 	asciiMap[32][0]+asciiMap[32][0]+asciiMap[32][0]+asciiMap[32][0],
+		// }
+		
+		var rows int = 8
+		asciiMap[9] = make([]string, rows)
+		
+		for i := 0 ; i < rows; i++{
+			//in each row there is a slice of 4*space
+			asciiMap[rune(9)][i] = asciiMap[32][0]+asciiMap[32][0]+asciiMap[32][0]+asciiMap[32][0]
+		}
 	}
 	// Create an array of arrays to represent four spaces, each eight lines long
 	return asciiMap
