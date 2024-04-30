@@ -7,6 +7,15 @@ import (
 	"strings"
 )
 
+// GMap represents a (character -> graphics) map
+type GMap = map[rune][]string
+
+// StyleMap represents a (banner style -> graphics map) map
+type StyleMap = map[string]GMap
+
+// Cache the (character -> graphics) in a map structure
+var styleCache = make(StyleMap)
+
 // Draw takes a list of ASCII text to be displayed with their respective banner style, maps all the text to their
 // respective banner graphics style, and returns a string that draws the graphics
 func Draw(all []args.DrawInfo) string {
@@ -116,15 +125,12 @@ func PrintCaret(caret []string) {
 // GetMap when given a given banner style, if not cached already, creates a map from the respective banner file,
 // with the defined characters matched to their graphics for drawing. Returns the created map, or the cached map
 func GetMap(style string) map[rune][]string {
-	m := make(map[rune][]string)
-
-	for i := 'a'; i <= 'z'; i++ {
-		var g []string
-		for j := 0; j < 8; j++ {
-			g = append(g, strings.Repeat(string(i), 5))
-		}
-
-		m[i] = g
+	// attempt to retrieve the (character -> graphics) map for the given style from the cache
+	m, ok := styleCache[style]
+	if !ok {
+		// This style graphics map isn't cached, create it
+		m = ReadBanner(style + ".txt")
+		styleCache[style] = m
 	}
 	return m
 }
