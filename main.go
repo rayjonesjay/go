@@ -15,28 +15,6 @@ func main() {
 		printUsage()
 	}
 	draw(draws)
-
-	//m := graphics.ReadBanner("banners/standard.txt")
-	//var result [][]string
-	//for _, di := range draws {
-	//	text := di.Text
-	//	for _, char := range text {
-	//		result = append(result, m[char])
-	//	}
-	//}
-	//
-	//for i := 0; i < 8; i++ {
-	//	for _, element := range result {
-	//		fmt.Print(element[i])
-	//	}
-	//	fmt.Println()
-	//}
-
-	// for _, element := range result {
-	// 	for _, value := range element {
-	// 		fmt.Println(value)
-	// 	}
-	// }
 }
 
 // Prints the program usage to the standard output, then exits the program with a non-zero return code
