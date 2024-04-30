@@ -11,7 +11,7 @@ import (
 func main() {
 	draws := args.Parse(os.Args[1:])
 	if draws == nil {
-		// nothing to draw, user error
+		// nothing to draw, usage error
 		printUsage()
 	}
 	m := graphics.ReadBanner("banners/standard.txt")
