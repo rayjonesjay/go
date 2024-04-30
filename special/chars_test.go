@@ -49,3 +49,23 @@ func TestSlashR(t *testing.T) {
 		t.Errorf("Expected %v got %v", expected3, output3)
 	}
 }
+
+func TestSlashFSlashV(t *testing.T) {
+	output := SlashFSlashV("hello\fworld\fthere\vthere")
+	expected := "hello\n     world\n          there\n               there"
+	if output != expected {
+		t.Errorf("Expected %v got %v", expected, output)
+	}
+
+	output2 := SlashFSlashV("hello\fworld")
+	expected2 := "hello\n     world"
+	if output2 != expected2 {
+		t.Errorf("Expected %v got %v", expected2, output2)
+	}
+
+	output3 := SlashFSlashV("hello\fworld\fhey\f")
+	expected3 := "hello\n     world\n          hey\n             "
+	if output3 != expected3 {
+		t.Errorf("Expected %v got %v", expected3, output3)
+	}
+}
