@@ -23,7 +23,7 @@ func Parse(args []string) []DrawInfo {
 	} else if l == 1 {
 		// Program received some text to be printed, use the standard banner to print the ASCII-ART
 		text := args[0]
-		return []DrawInfo{{Text: text, Style: Standard}}
+		return []DrawInfo{{Text: Escape(text), Style: Standard}}
 	} else {
 		// Program received a series of texts to be printed, with banner style specified for consecutive texts
 		var out []DrawInfo
@@ -34,7 +34,7 @@ func Parse(args []string) []DrawInfo {
 			if j < l {
 				style = args[j]
 			}
-			out = append(out, DrawInfo{Text: text, Style: style})
+			out = append(out, DrawInfo{Text: Escape(text), Style: style})
 		}
 		return out
 	}
