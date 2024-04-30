@@ -1,11 +1,11 @@
 package main
 
 import (
+	"ascii/graphics"
 	"fmt"
 	"os"
 
 	"ascii/args"
-	"ascii/graphics"
 )
 
 func main() {
@@ -14,29 +14,29 @@ func main() {
 		// nothing to draw, usage error
 		printUsage()
 	}
-	m := graphics.ReadBanner("banners/standard.txt")
-	var result [][]string
-	for _, di := range draws {
-		text := di.Text
-		for _, char := range text {
-			result = append(result, m[char])
-		}
-	}
+	draw(draws)
 
-	for i := 0; i < 8; i++ {
-		for _, element := range result {
-			fmt.Print(element[i])
-		}
-		fmt.Println()
-	}
+	//m := graphics.ReadBanner("banners/standard.txt")
+	//var result [][]string
+	//for _, di := range draws {
+	//	text := di.Text
+	//	for _, char := range text {
+	//		result = append(result, m[char])
+	//	}
+	//}
+	//
+	//for i := 0; i < 8; i++ {
+	//	for _, element := range result {
+	//		fmt.Print(element[i])
+	//	}
+	//	fmt.Println()
+	//}
 
 	// for _, element := range result {
 	// 	for _, value := range element {
 	// 		fmt.Println(value)
 	// 	}
 	// }
-
-	// draw(draws)
 }
 
 // Prints the program usage to the standard output, then exits the program with a non-zero return code
@@ -51,7 +51,8 @@ func printUsage() {
 	os.Exit(1)
 }
 
-// Given a series of [DrawInfo] items, extract the drawing information and generate the expected graphics
+// Given a series of [args.DrawInfo] items, extract the drawing information and generate the expected graphics
 func draw(all []args.DrawInfo) {
-	// TODO
+	out := graphics.Draw(all)
+	fmt.Println(out)
 }
