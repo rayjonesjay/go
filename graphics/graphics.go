@@ -79,12 +79,12 @@ func Drawln(caret []string, s string, m map[rune][]string) []string {
 			} else {
 				fmt.Printf("Invalid ASCII character: \"%c\"\n", char)
 			}
-			os.Exit(2)
+			os.Exit(1)
 		}
 
 		if len(caret) != len(g) {
 			fmt.Printf("Invalid graphics read for letter: \"%c\"\n", char)
-			os.Exit(2)
+			os.Exit(1)
 		}
 
 		// append the current character's graphics to its respective line in the caret
