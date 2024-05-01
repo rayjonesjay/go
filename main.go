@@ -2,8 +2,10 @@ package main
 
 import (
 	"ascii/graphics"
+	"ascii/special"
 	"fmt"
 	"os"
+	"strings"
 
 	"ascii/args"
 )
@@ -31,6 +33,24 @@ func printUsage() {
 
 // Given a series of [args.DrawInfo] items, extract the drawing information and generate the expected graphics
 func draw(all []args.DrawInfo) {
+	// The text received from the commandline may include special ASCII escape characters as \r, \v, \b
+	//we handle such using the utilities from the special chars package
+	for i := 0; i < len(all); i++ {
+		d := all[i]
+		// FIXME:
+		// current implementation of the special chars package didn't use the actual special characters; e.g.
+		//the implementation used (\\r) instead of (\r)
+		d.Text = strings.ReplaceAll(d.Text, "\b", "\\b")
+		d.Text = strings.ReplaceAll(d.Text, "\r", "\\r")
+
+		// Handle the special characters \b, \r, \0
+		d.Text = special.SlashB(d.Text)
+		d.Text = special.SlashR(d.Text) // This fails: 'Go\nHello\r12ere'?
+		// We might not need this?
+		d.Text = special.SlashZero(d.Text)
+
+		all[i] = d
+	}
 	out := graphics.Draw(all)
 	fmt.Print(out)
 }
