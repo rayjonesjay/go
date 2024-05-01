@@ -170,10 +170,6 @@ func AllNewlines(s string) bool {
 	return true
 }
 
-func PrintCaret(caret []string) {
-	fmt.Print(SPrintCaret(caret))
-}
-
 // GetMap when given a given banner style, if not cached already, creates a map from the respective banner file,
 // with the defined characters matched to their graphics for drawing. Returns the created map, or the cached map
 func GetMap(style string) map[rune][]string {
