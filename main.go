@@ -32,5 +32,5 @@ func printUsage() {
 // Given a series of [args.DrawInfo] items, extract the drawing information and generate the expected graphics
 func draw(all []args.DrawInfo) {
 	out := graphics.Draw(all)
-	fmt.Println(out)
+	fmt.Print(out)
 }
