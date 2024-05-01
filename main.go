@@ -45,7 +45,7 @@ func draw(all []args.DrawInfo) {
 
 		// Handle the special characters \b, \r, \0
 		d.Text = special.SlashB(d.Text)
-		d.Text = special.SlashR(d.Text) // This fails: 'Go\nHello\r12ere'?
+		d.Text = special.SlashR(d.Text) // This fails: 'Go\nHello\r12ere'? this too: 'Go'?
 		// We might not need this?
 		d.Text = special.SlashZero(d.Text)
 
