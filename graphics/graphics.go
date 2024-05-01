@@ -4,6 +4,7 @@ import (
 	"ascii/args"
 	"fmt"
 	"os"
+	"regexp"
 	"strings"
 )
 
@@ -19,26 +20,51 @@ var styleCache = make(StyleMap)
 // Draw takes a list of ASCII text to be displayed with their respective banner style, maps all the text to their
 // respective banner graphics style, and returns a string that draws the graphics
 func Draw(all []args.DrawInfo) string {
+	// Check if the given slice of text to be drawn are all empty strings,
+	//in which case there really is nothing to be drawn
+	allEmpty := true
+	for _, d := range all {
+		if d.Text != "" {
+			// Found one non-empty text to be displayed
+			allEmpty = false
+			// beak early, continuing the loop won't make any difference
+			break
+		}
+	}
+
+	if allEmpty {
+		// Nothing to draw, thus, nothing to print
+		return ""
+	}
+
+	// We have a series of graphics to draw
 	var b strings.Builder
 	var caret []string
 	// Draw each text in order with its respective style
 	for _, info := range all {
+		if info.Text == "" {
+			// empty text, nothing to draw
+			continue
+		} else if AllNewlines(info.Text) {
+			// The current text to print is a special case of all (\n) newline characters
+			// We don't need to print these on the caret, just print the newlines directly
+			b.WriteString(strings.Repeat("\n", len(info.Text)-1))
+			continue
+		}
 		// The current text may be on different lines, if so, we may need to advance the caret to a new line
 		lines := strings.Split(info.Text, "\n")
 		for i, l := range lines {
 			if i == 0 {
-				// first line is to be drawn, contrary to the else statement below,
+				// first line is to be drawn, contrary to the `else` statement below,
 				//we must not yet advance the caret to a newline, we may have more text on this same line
 				caret = Drawln(caret, l, GetMap(info.Style))
 			} else {
 				// Write the previous line, we are yet to write another line
 				output := SPrintCaret(caret)
-				if output != "" {
-					b.WriteString(output)
-					// advance the caret to a newline, we are done with text on the current line,
-					//as we prepare to write the next line
-					b.WriteRune('\n')
-				}
+				b.WriteString(output)
+				// advance the caret to a newline, we are done with text on the current line,
+				//as we prepare to write the next line
+				b.WriteRune('\n')
 				// Prepare to write a new line, but we must not yet advance the caret to a newline,
 				//we may have more text on this same line
 				caret = nil
@@ -47,6 +73,7 @@ func Draw(all []args.DrawInfo) string {
 		}
 	}
 	b.WriteString(SPrintCaret(caret))
+	b.WriteRune('\n')
 	return b.String()
 }
 
@@ -54,17 +81,17 @@ func Draw(all []args.DrawInfo) string {
 // This therefore, assumes that s is strictly a line of text, and, thus, does not contain any newline characters
 // This also expects a map of the ASCII characters to their respective art graphics
 func Drawln(caret []string, s string, m map[rune][]string) []string {
-	if s == "" {
-		return caret
-	}
-
-	// A caret should ideally be 8 lines, we model the 8 lines with a slice of 8 items
+	// A caret should ideally be 8 lines, we model the 8 lines with a slice of 8 strings
 	if caret == nil || len(caret) < 8 {
 		buffer := make([]string, 8)
 		for i, cl := range caret {
 			buffer[i] = cl
 		}
 		caret = buffer
+	}
+
+	if s == "" {
+		return caret
 	}
 
 	// Map each ASCII character to its graphics, and append to the current caret position
@@ -99,7 +126,10 @@ func Drawln(caret []string, s string, m map[rune][]string) []string {
 // SPrintCaret given a caret, draws the graphics for the caret to a string and returns the string
 func SPrintCaret(caret []string) string {
 	if caret == nil {
-		// Caret empty, nothing to print
+		// Caret null, nothing to print
+		return ""
+	} else if EmptyCaret(caret) {
+		// Caret empty, we'll print an empty string
 		return ""
 	}
 
@@ -116,6 +146,28 @@ func SPrintCaret(caret []string) string {
 	}
 
 	return b.String()
+}
+
+// EmptyCaret returns true if the caret is empty, i.e., entirely composed of empty strings
+func EmptyCaret(caret []string) bool {
+	for _, line := range caret {
+		if line != "" {
+			return false
+		}
+	}
+	return true
+}
+
+// AllNewlines returns true if all the string s is composed entirely of newline characters
+func AllNewlines(s string) bool {
+	re := regexp.MustCompile(`^\n+$`)
+	match := re.FindStringSubmatch(s)
+	if match == nil {
+		// No match
+		return false
+	}
+	// s is composed entirely of newline characters
+	return true
 }
 
 func PrintCaret(caret []string) {
