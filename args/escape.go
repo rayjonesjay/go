@@ -14,10 +14,6 @@ import (
 //
 //	\b     backspace
 //
-//	\c     produce no further output
-//
-//	\e     escape
-//
 //	\f     form feed
 //
 //	\n     new line
