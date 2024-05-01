@@ -1,7 +1,7 @@
 Usage:
     ascii TEXT
     ascii TEXT STYLE
-    ascii (TEXT STYLE)...
+    ascii (TEXT STYLE)...TEXT [STYLE]
 
 Display ASCII graphics
 
@@ -10,5 +10,43 @@ TEXT:
 
 STYLE:
     The banner style to use to draw the given text
+    Supported banner styles: shadow
+                             standard
+                             thinkertoy
 
-For more details see https://learn.zone01kisumu.ke/git/najwang/ascii-art
+Description:
+       The following backslash escape sequences are recognized:
+
+       \\     backslash
+
+       \a     alert (BEL)
+
+       \b     backspace
+
+       \c     produce no further output
+
+       \e     escape
+
+       \f     form feed
+
+       \n     new line
+
+       \r     carriage return
+
+       \t     horizontal tab
+
+       \v     vertical tab
+
+       \0NNN  byte with octal value NNN (1 to 3 digits)
+
+       \xHH   byte with hexadecimal value HH (1 to 2 digits)
+
+AUTHOR
+       Written by Nicholas Ajwang, Ray Muiruri, and David Ochiel.
+
+COPYRIGHT
+       Copyright © 2024 Zone01 Kisumu Inc.  License MIT: https://opensource.org/license/mit.
+       This is free software: you are free to change and redistribute it.  There is NO WARRANTY, to the extent permitted by law.
+
+SEE ALSO
+       Full documentation https://learn.zone01kisumu.ke/git/najwang/ascii-art
