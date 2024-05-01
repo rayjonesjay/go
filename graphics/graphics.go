@@ -128,7 +128,7 @@ func SPrintCaret(caret []string) string {
 	if caret == nil {
 		// Caret null, nothing to print
 		return ""
-	} else if EmptyCaret(caret) {
+	} else if CaretEmpty(caret) {
 		// Caret empty, we'll print an empty string
 		return ""
 	}
@@ -148,8 +148,8 @@ func SPrintCaret(caret []string) string {
 	return b.String()
 }
 
-// EmptyCaret returns true if the caret is empty, i.e., entirely composed of empty strings
-func EmptyCaret(caret []string) bool {
+// CaretEmpty returns true if the caret is empty, i.e., entirely composed of empty strings
+func CaretEmpty(caret []string) bool {
 	for _, line := range caret {
 		if line != "" {
 			return false
