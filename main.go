@@ -37,7 +37,7 @@ func draw(all []args.DrawInfo) {
 	//we handle such using the utilities from the special chars package
 	for i := 0; i < len(all); i++ {
 		d := all[i]
-		// FIXME:
+		// FIXME: won't fix
 		// current implementation of the special chars package didn't use the actual special characters; e.g.
 		//the implementation used (\\r) instead of (\r)
 		d.Text = strings.ReplaceAll(d.Text, "\b", "\\b")
@@ -49,8 +49,7 @@ func draw(all []args.DrawInfo) {
 		// functions in the special package only expect a single line of text for modification,
 		//but our text may include multiple lines, thus, we feed each line separately to the functions
 		d.Text = applyPerLine(d.Text, special.SlashB)
-		// TODO: handle \r when bug fixed
-		//d.Text = applyPerLine(d.Text, special.SlashR) // This fails: 'Go\nHello\r12ere'? this too: 'Go'?
+		d.Text = applyPerLine(d.Text, special.SlashR)
 
 		all[i] = d
 	}
