@@ -43,7 +43,9 @@ func draw(all []args.DrawInfo) {
 		d.Text = strings.ReplaceAll(d.Text, "\b", "\\b")
 		d.Text = strings.ReplaceAll(d.Text, "\r", "\\r")
 
-		// Handle the special characters \b, \r
+		// Handle the special characters \t, \b, \r
+		// Interpret \t characters as two spaces
+		d.Text = strings.ReplaceAll(d.Text, "\t", "  ")
 		// functions in the special package only expect a single line of text for modification,
 		//but our text may include multiple lines, thus, we feed each line separately to the functions
 		d.Text = applyPerLine(d.Text, special.SlashB)
