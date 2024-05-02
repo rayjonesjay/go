@@ -43,12 +43,24 @@ func draw(all []args.DrawInfo) {
 		d.Text = strings.ReplaceAll(d.Text, "\b", "\\b")
 		d.Text = strings.ReplaceAll(d.Text, "\r", "\\r")
 
-		// Handle the special characters \b, \r, \0
-		d.Text = special.SlashB(d.Text)
-		//d.Text = special.SlashR(d.Text) // This fails: 'Go\nHello\r12ere'? this too: 'Go'?
+		// Handle the special characters \b, \r
+		// functions in the special package only expect a single line of text for modification,
+		//but our text may include multiple lines, thus, we feed each line separately to the functions
+		d.Text = applyPerLine(d.Text, special.SlashB)
+		// TODO: handle \r when bug fixed
+		//d.Text = applyPerLine(d.Text, special.SlashR) // This fails: 'Go\nHello\r12ere'? this too: 'Go'?
 
 		all[i] = d
 	}
 	out := graphics.Draw(all)
 	fmt.Print(out)
+}
+
+// applyPerLine applies the function f separately to each line of the string s, and returns the results as a string
+func applyPerLine(s string, f func(string) string) string {
+	lines := strings.Split(s, "\n")
+	for i, l := range lines {
+		lines[i] = f(l)
+	}
+	return strings.Join(lines, "\n")
 }
