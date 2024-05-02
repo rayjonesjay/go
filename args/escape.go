@@ -26,9 +26,13 @@ import (
 //
 //	\0NNN  byte with octal value NNN (1 to 3 digits)
 //
+// '\0'    null character
+//
 //	\xHH   byte with hexadecimal value HH (1 to 2 digits)
 //
-// Note: Any octal or hexadecimal values of ASCII characters that cannot be printed will be ignored
+// Note:
+// Where it makes sense, the \0NNN octal escape takes precedence over the \0 null character
+// Any octal or hexadecimal values of ASCII characters that cannot be printed will be ignored
 func Escape(arg string) string {
 	ss := []rune(arg)
 	l := len(ss)
@@ -60,7 +64,14 @@ func Escape(arg string) string {
 				ss[i] = rep
 				ss[j] = -1
 			} else if !replaceEscape(i, ss, 'x', 2, HexStringToDecimal) {
-				replaceEscape(i, ss, '0', 3, OctalStringToDecimal)
+				if !replaceEscape(i, ss, '0', 3, OctalStringToDecimal) {
+					// Probably an invalid octal after \0, try to interpret null character instead
+					if nc == '0' {
+						// Don't include null characters
+						ss[i] = -1
+						ss[j] = -1
+					}
+				}
 			}
 		}
 

@@ -35,7 +35,13 @@ Description:
 
        \0NNN  byte with octal value NNN (1 to 3 digits)
 
+       \0    null character
+
        \xHH   byte with hexadecimal value HH (1 to 2 digits)
+
+       Note:
+          Where it makes sense, the \0NNN octal escape takes precedence over the \0 null character.
+          Any octal or hexadecimal values of ASCII characters that cannot be printed will be ignored.
 
 AUTHOR
        Written by Nicholas Ajwang, Ray Muiruri, and David Ochiel.
