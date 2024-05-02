@@ -20,6 +20,12 @@ func TestSlashB(t *testing.T) {
 	if output3 != expected3 {
 		t.Errorf("Expected %v got %v", expected3, output3)
 	}
+
+	output4 := SlashB("hello")
+	expected4 := "hello"
+	if output4 != expected4 {
+		t.Errorf("Expected %v got %v", expected4, output4)
+	}
 }
 
 func TestSlashZero(t *testing.T) {
@@ -27,6 +33,12 @@ func TestSlashZero(t *testing.T) {
 	expected := "heythere our world "
 	if output != expected {
 		t.Errorf("Expected %v got %v", expected, output)
+	}
+
+	output2 := SlashZero("hey")
+	expected2 := "hey"
+	if output2 != expected2 {
+		t.Errorf("Expected %v got %v", expected2, output2)
 	}
 }
 
@@ -48,6 +60,12 @@ func TestSlashR(t *testing.T) {
 	if output3 != expected3 {
 		t.Errorf("Expected %v got %v", expected3, output3)
 	}
+
+	output4 := SlashR("hello")
+	expected4 := "hello"
+	if output4 != expected4 {
+		t.Errorf("Expected %v got %v", expected4, output4)
+	}
 }
 
 func TestSlashFSlashV(t *testing.T) {
@@ -67,5 +85,11 @@ func TestSlashFSlashV(t *testing.T) {
 	expected3 := "hello\n     world\n          hey\n             "
 	if output3 != expected3 {
 		t.Errorf("Expected %v got %v", expected3, output3)
+	}
+
+	output4 := SlashFSlashV("hello")
+	expected4 := "hello"
+	if output4 != expected4 {
+		t.Errorf("Expected %v got %v", expected4, output4)
 	}
 }

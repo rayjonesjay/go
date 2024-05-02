@@ -53,6 +53,12 @@ func SlashR(s string) string {
 	arr := strings.Split(s, "\\r")
 
 	for i := 0; i < len(arr); i++ {
+		// if there is no \r character in the string then the arr will only have one string
+		// in that case just return the string
+		if len(arr) == 1 {
+			return arr[0]			
+		}
+
 		// check if the string after \r is longer than the string before
 		// if so, update the string before to be the string after \r
 		if i+1 < len(arr) && len(arr[i+1]) > len(arr[i]) {
