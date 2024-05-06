@@ -13,9 +13,11 @@ import (
 
 //makedirectory makes banner directory if it does not exist
 func makedirectory(dir string) bool {
-	dir = os.ExpandEnv("$HOME/ascii-art/"+dir)
+	path := "$HOME/ascii-art/"+dir
+	dir = os.ExpandEnv(path)
 	err := os.Mkdir(dir,0775)
 	if err != nil {
+		log.Fatalf("\nPath error %s\n\t%v\n",path,err)
 		return false
 	}
 	return true
@@ -23,13 +25,8 @@ func makedirectory(dir string) bool {
 
 func DirectoryExist(dirPath string) bool {
 	_, err := os.Stat(dirPath)
-	//IsNotExist() will return true if the directory does not exist
-	if os.IsNotExist(err) {
-		//directory does not exist
-		return false 
-	}
-	//directory exist
-	return true 
+	//IsNotExist() will return true if the directory does not exist or the error returned is not about file missing 
+	return !os.IsNotExist(err)
 }
 
 func download(fileName string) {
@@ -54,8 +51,6 @@ func download(fileName string) {
 			fmt.Println(out)
 		}
 	}
-
-	return
 }
 
 //fix extension removes additional extensions from a file and returns only the first extension
@@ -112,18 +107,8 @@ func checkFileExist(fileName string) string {
 // This function takes the name of a file in string format, reads the ascii art inside the file, and maps each ascii art to its rune value
 func ReadBanner(fileName string) map[rune][]string {
 
-	file_name := strings.
-	// //before opening the file check if its a valid banner file required by the project
-	// func isValidBannerFile(s string) bool {
-	// 	validBanners := [3]string{"standard.txt", "shadow.txt", "thinkertoy.txt"}
-	// 	for _, validBannerFile := range validBanners{
-	// 		if s == validBannerFile {
-	// 			return true 
-	// 		}
-	// 	}
-	// 	return false
-	// }
-	ReplaceAll(fileName, "banners/", "")
+	file_name := strings.ReplaceAll(fileName, "banners/", "")
+	file_name = fixFileExtension(file_name)
 	if !(file_name == "standard.txt" || file_name == "shadow.txt" || file_name == "thinkertoy.txt"){
 		fmt.Printf("%s not a valid banner file. Download it from your source and add it to banner/ directory.\n",file_name)
 		os.Exit(1)
@@ -142,9 +127,11 @@ func ReadBanner(fileName string) map[rune][]string {
 			if makedirectory(dir) {
 				fmt.Printf("%s \ndirectory created!! rerun the program with the required banner files inside.\n\n",strings.ReplaceAll(dir, "/", ""))
 			}
-		}else{
+		}else if  strings.ToLower(choice) == "n" || strings.ToLower(choice) == "no" {
 			fmt.Println("CAUTION: program cannot run without banner/ directory.")
 			os.Exit(0)
+		}else{
+			fmt.Printf("Wrong Input: You entered -> %s Expected -> yes(y) or no(n).\n",choice)
 		}
 
 
@@ -156,7 +143,6 @@ func ReadBanner(fileName string) map[rune][]string {
 	// handle error if the file does not exist error and also other possible errors
 	if possibleError != nil {
 		if os.IsNotExist(possibleError) {
-			//fmt.Fprintf(os.Stderr, "\"%s\" file does not exist: download the required files from the links below: \n\t%s\n\t%s\n\t%s\n", fileName, link1, link2, link3)
 			os.Exit(1) //file not found exit code
 		}
 		log.Fatalf("Failed to open banner file: \"%s\"", fileName)
