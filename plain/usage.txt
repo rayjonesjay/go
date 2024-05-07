@@ -3,6 +3,12 @@ Usage:
     ascii TEXT STYLE
     ascii (TEXT STYLE)...TEXT [STYLE]
 
+Examples:
+       go run main.go "TEXT"
+       go run main.go "TEXT" standard
+       go run main.go "TEXT1" shadow "TEXT2" thinkertoy
+       go run main.go "TEXT1" standard "TEXT2" shadow "TEXT3" thinkertoy
+
 Display ASCII graphics
 
 TEXT:
