@@ -11,25 +11,89 @@ import (
 	"time"
 ) 
 
-//makedirectory makes banner directory if it does not exist
-func makedirectory(dir string) bool {
-	path := "$HOME/ascii-art/"+dir
-	dir = os.ExpandEnv(path)
-	err := os.Mkdir(dir,0775)
-	if err != nil {
-		log.Fatalf("\nPath error %s\n\t%v\n",path,err)
-		return false
+//checkFileExist checks if a file exist in banner/ else ask user to download
+func checkFileExist(fileName string) string {
+
+	FileInformation, err := os.Stat(fileName)
+	// Check if the file exists and has a size of 0 if its true ask the user to download a new one
+	if FileInformation != nil && FileInformation.Size() == 0 {
+
+		fmt.Printf("%s is an empty file. Do you wish to download the file? yes(y)/no(n).\n", fileName)
+		var choice string 
+		fmt.Scan(&choice)
+
+		if strings.ToLower(choice) == "yes" || strings.ToLower(choice)=="y" {
+
+			delete(fileName)
+			download(fileName)
+			fmt.Printf("%s download success...\n",strings.ReplaceAll(fileName, "banners/", ""))
+
+		}else if strings.ToLower(choice) == "no" || strings.ToLower(choice)=="n" {
+
+			fmt.Printf("Cannot continue with the program without: %s\n",strings.ReplaceAll(fileName, "banners/", ""))
+			os.Exit(1)
+
+		}else{
+
+			fmt.Println("WRONG user input.Exiting...")
+			os.Exit(1)
+		}
 	}
-	return true
+
+
+	if err != nil {
+		//Download the files automatically
+		var userChoice string
+		fmt.Printf("%s does not exist do you wish to download? yes(y)/no(n)\n",strings.ReplaceAll(fileName,"banners/",""))
+		fmt.Scan(&userChoice)
+
+		if (strings.ToLower(userChoice)== "yes" || strings.ToLower(userChoice) == "y"){
+			download(fileName)
+
+			sourceLink:= "https://learn.zone01kisumu.ke/git/root/public/src/branch/master/subjects/ascii-art/"
+			fmt.Printf("Wait..fetching resource from.. %s\n",sourceLink)
+
+			duration_to_wait := 2 * time.Second
+			time.Sleep(duration_to_wait)
+
+			fmt.Printf("%s download success...\n",strings.ReplaceAll(fileName, "banners/", ""))
+
+		}else if (strings.ToLower(userChoice) == "no" || strings.ToLower(userChoice) == "n") {
+
+			fmt.Printf("Cannot continue with the program without: %s\n",strings.ReplaceAll(fileName, "banners/", ""))
+			os.Exit(1)
+
+		}else{
+
+			fmt.Printf("Wrong Input: You entered -> %s Expected -> yes(y) or no(n).\n",userChoice)
+			os.Exit(1)
+		}
 }
 
-func DirectoryExist(dirPath string) bool {
+return fileName
+
+}
+
+
+//DirectoryExist() checks if a directory exist
+func directoryExist(dirPath string) bool {
 	_, err := os.Stat(dirPath)
 	//IsNotExist() will return true if the directory does not exist or the error returned is not about file missing 
 	return !os.IsNotExist(err)
 }
 
+//delete() deletes the empty file with no ascii art and it is called before callind download to avoid conflict
+func delete(filename string) {
+	filePath := "$HOME/ascii-art/"+filename
+	filePath = os.ExpandEnv(filePath)
+	delete := exec.Command("rm" ,filePath)
+	_,err := delete.CombinedOutput()
+	if err != nil {log.Fatalf("error deleting %v",err)}
+}
+
+//download() files from  "https://learn.zone01kisumu.ke/git/root/public/src/branch/master/subjects/ascii-art/"
 func download(fileName string) {
+	
 	rawLink := "https://learn.zone01kisumu.ke/git/root/public/raw/branch/master/subjects/ascii-art/"
 	file := strings.ReplaceAll(fileName, "banners/" ,"")
 	fullPath := rawLink+file
@@ -38,20 +102,22 @@ func download(fileName string) {
 
 	if err != nil {
 
-		log.Fatalf("\n\tDownload attempt failed! Check your internet connection and try again.\n%T\n", err)
+		log.Fatalf("\n\tDownload attempt failed! Check your internet connection and try again.\n")
 		os.Exit(1)
 
-	}else{
+	}else {
 
 		move := exec.Command("mv" , file, "banners/")
 		out , err := move.CombinedOutput()
 
 		if err != nil{
+			//check error occurred when moving file to banners/
 			fmt.Fprintf(os.Stderr, "error: %T\n",err)
 			fmt.Println(out)
 		}
 	}
 }
+
 
 //fix extension removes additional extensions from a file and returns only the first extension
 func fixFileExtension(file_name string) string {
@@ -65,42 +131,19 @@ func fixFileExtension(file_name string) string {
 	return file_name
 }
 
-func checkFileExist(fileName string) string {
 
-		//check if the requested files exist.
-		FileInformation, err := os.Stat(fileName)
 
-		if err != nil {
-			//Download the files automatically
-			var userChoice string
-			fmt.Printf("%s does not exist do you wish to download? yes/no\n",strings.ReplaceAll(fileName,"banners/",""))
-			fmt.Scan(&userChoice)
-
-			if (strings.ToLower(userChoice)== "yes" || strings.ToLower(userChoice) == "y"){
-				download(fileName)
-
-				sourceLink:= "https://learn.zone01kisumu.ke/git/root/public/src/branch/master/subjects/ascii-art/"
-				fmt.Printf("Wait..fetching resource from: %s\n",sourceLink)
-				duration_to_wait := 2 * time.Second
-				time.Sleep(duration_to_wait)
-				fmt.Printf("%s download success...\n",strings.ReplaceAll(fileName, "banners/", ""))
-
-			}else if (strings.ToLower(userChoice) == "no" || strings.ToLower(userChoice) == "n") {
-				fmt.Printf("Cannot continue with the program without: %s\n",strings.ReplaceAll(fileName, "banners/", ""))
-				os.Exit(1)
-			}else{
-				fmt.Println("WRONG user input.Exiting...")
-				os.Exit(1)
-			}
-		// Check if the file exists and has a size of 0
-		if FileInformation != nil && FileInformation.Size() == 0 {
-			log.Fatalf("%s is an empty file. Does not contain ASCII art!!", fileName)
-			os.Exit(1)
-		}
+//makedirectory() makes banner directory if it does not exist
+func makedirectory(dir string) bool {
+	path := "$HOME/ascii-art/"+dir
+	dir = os.ExpandEnv(path)
+	err := os.Mkdir(dir,0775)
+	if err != nil {
+		log.Fatalf("\nPath error %s\n\t%v\n",path,err)
+		return false
 	}
-	return fileName
+	return true
 }
-	
 
 
 
@@ -116,7 +159,7 @@ func ReadBanner(fileName string) map[rune][]string {
 	//split the directory and file apart
 	dir , _ := filepath.Split(fileName)
 	//if the directory does not exist
-	if !DirectoryExist(dir) {
+	if !directoryExist(dir) {
 
 		var choice string 
 		fmt.Printf("%s does not exist. Do you wish to create it in order for the program to run?  yes(y) or no(n).\n",dir)
@@ -136,9 +179,12 @@ func ReadBanner(fileName string) map[rune][]string {
 
 
 	}else{
-		//check
+
+		//check for file existence
 		fileName = checkFileExist(fileName)
 	}
+
+
 	file, possibleError := os.Open(fileName)
 	// handle error if the file does not exist error and also other possible errors
 	if possibleError != nil {
