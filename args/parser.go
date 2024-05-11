@@ -49,7 +49,7 @@ func Parse(args []string) []DrawInfo {
 				case Standard, Shadow, Thinkertoy:
 					style = args[textPosition+1]
 				default:
-					fmt.Fprintf(os.Stderr, "Style argument not recognized! Passed -> %s Expected -> shadow|standard|thinkeroy\n", args[textPosition+1])
+					fmt.Fprintf(os.Stderr, "Style argument not recognized! Passed -> %s Expected -> shadow|standard|thinkertoy\n", args[textPosition+1])
 					os.Exit(1)
 				}
 			}
