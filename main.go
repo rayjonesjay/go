@@ -1,12 +1,12 @@
 package main
 
 import (
+	"ascii/args"
 	"ascii/graphics"
 	"ascii/special"
 	"fmt"
 	"os"
 	"strings"
-	"ascii/args"
 )
 
 func main() {
@@ -46,7 +46,7 @@ func draw(all []args.DrawInfo) {
 		// Interpret \t characters as two spaces
 		d.Text = strings.ReplaceAll(d.Text, "\t", "  ")
 		// functions in the special package only expect a single line of text for modification,
-		//but our text may include multiple lines, thus, we feed each line separately to the functions
+		//but our text may include multiple lines; thus, we feed each line separately to the functions
 		d.Text = applyPerLine(d.Text, special.SlashB)
 		d.Text = applyPerLine(d.Text, special.SlashR)
 
