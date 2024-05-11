@@ -30,23 +30,6 @@ func SlashB(s string) string {
 	return result
 }
 
-// SlashZero handling \0
-func SlashZero(s string) string {
-	result := ""
-
-	// change the string to an array of runes
-	runes := []rune(s)
-	for i := 0; i < len(runes); i++ {
-		// check if the current rune is not at the last index, and it's '\' and the next is '0'
-		if i+1 < len(runes) && runes[i] == '\\' && runes[i+1] == '0' {
-			i++ // skip the '\' and '0' character
-		} else {
-			result += string(runes[i])
-		}
-	}
-	return result
-}
-
 // SlashR handling \r
 func SlashR(s string) string {
 	result := ""
