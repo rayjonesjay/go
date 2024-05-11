@@ -36,6 +36,9 @@ func draw(all []args.DrawInfo) {
 	//we handle such using the utilities from the special chars package
 	for i := 0; i < len(all); i++ {
 		d := all[i]
+		if d.Text == "" {
+			continue
+		}
 		// FIXME: won't fix
 		// current implementation of the special chars package didn't use the actual special characters; e.g.
 		//the implementation used (\\r) instead of (\r)
