@@ -1,5 +1,10 @@
 package args
 
+import (
+	"fmt"
+	"os"
+)
+
 const (
 	Shadow     = "shadow"
 	Standard   = "standard"
@@ -25,17 +30,42 @@ func Parse(args []string) []DrawInfo {
 		text := args[0]
 		return []DrawInfo{{Text: Escape(text), Style: Standard}}
 	} else {
+
 		// Program received a series of texts to be printed, with banner style specified for consecutive texts
 		var out []DrawInfo
-		for i := 0; i < l; i += 2 {
-			j := i + 1
-			text := args[i]
+
+		for textPosition := 0; textPosition < l; textPosition += 2 {
+
+			text := args[textPosition]
+
+			// default style is Standard
 			style := Standard
-			if j < l {
-				style = args[j]
+
+			// check if style is provided
+			if textPosition+1 < l {
+				// style = args[textPosition]
+				switch args[textPosition+1] {
+
+				case Standard, Shadow, Thinkertoy:
+					style = args[textPosition+1]
+				default:
+					fmt.Fprintf(os.Stderr, "Style argument not recognized! Passed -> %s Expected -> shadow|standard|thinkeroy\n", args[textPosition+1])
+					os.Exit(1)
+				}
 			}
 			out = append(out, DrawInfo{Text: Escape(text), Style: style})
 		}
+
+		// for i := 0; i < l; i += 2 {
+		// 	j := i + 1
+		// 	text := args[i]
+		// 	style := Standard
+		// 	if j < l {
+		// 		style = args[j]
+		// 	}
+
+		// 	out = append(out, DrawInfo{Text: Escape(text), Style: style})
+		// }
 		return out
 	}
 }
