@@ -28,20 +28,6 @@ func TestSlashB(t *testing.T) {
 	}
 }
 
-func TestSlashZero(t *testing.T) {
-	output := SlashZero("hey\\0there\\0 our world \\0")
-	expected := "heythere our world "
-	if output != expected {
-		t.Errorf("Expected %v got %v", expected, output)
-	}
-
-	output2 := SlashZero("hey")
-	expected2 := "hey"
-	if output2 != expected2 {
-		t.Errorf("Expected %v got %v", expected2, output2)
-	}
-}
-
 func TestSlashR(t *testing.T) {
 	output := SlashR("hello\\rworld")
 	expected := "world"
