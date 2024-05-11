@@ -168,7 +168,7 @@ func ReadBanner(filePath string) map[rune][]string {
 			}
 		} else if strings.ToLower(choice) == "n" || strings.ToLower(choice) == "no" {
 			fmt.Println("CAUTION: program cannot run without banner/ directory.")
-			os.Exit(0)
+			os.Exit(1)
 		} else {
 			fmt.Printf("Wrong Input: You entered -> %s Expected -> yes(y) or no(n).\n", choice)
 		}
