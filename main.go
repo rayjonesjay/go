@@ -52,7 +52,8 @@ func draw(all []args.DrawInfo) {
 		//but our text may include multiple lines; thus, we feed each line separately to the functions
 		d.Text = applyPerLine(d.Text, special.SlashB)
 		d.Text = applyPerLine(d.Text, special.SlashR)
-		d.Text = applyPerLine(d.Text, special.SlashFSlashV)
+		// Fails to handle "" and "\n"
+		//d.Text = applyPerLine(d.Text, special.SlashFSlashV)
 
 		all[i] = d
 	}
