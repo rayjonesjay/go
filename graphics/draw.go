@@ -39,7 +39,7 @@ func checkFileExist(fileName string) string {
 		}
 
 	}
-	
+
 	// an error occurred since the err variable is not equal to nil meaning an error was stored in that variable
 	if err != nil {
 		// Download the files automatically
@@ -190,7 +190,7 @@ func ReadBanner(fileName string) map[rune][]string {
 	// create ascii art map to store the character and its equivalent ascii art
 	asciiMap := make(map[rune][]string)
 
-	// i is our loop variable and it starts from 32 which is space character
+	// variable i is our loop counter, and it starts from 32 which is space character
 	for i := 32; i <= 126; i++ {
 
 		currentRune := rune(i)
@@ -207,21 +207,11 @@ func ReadBanner(fileName string) map[rune][]string {
 			} else {
 				// append each line we read to the currentArt array
 				line := scan.Text()
-				// Replace tabs with four spaces in the line
-				line = strings.ReplaceAll(line, "\n", "    ")
 				currentArt[count] = line
 			}
 		}
 
 		asciiMap[currentRune] = currentArt
-		var rows int = 8
-		asciiMap[9] = make([]string, rows)
-
-		for i := 0; i < rows; i++ {
-			// in each row there is a slice of 4*space
-			asciiMap[rune(9)][i] = asciiMap[32][0] + asciiMap[32][0] + asciiMap[32][0] + asciiMap[32][0]
-		}
-
 	}
 	// Create an array of arrays to represent four spaces, each eight lines long
 	return asciiMap
