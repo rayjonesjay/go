@@ -3,12 +3,6 @@ Usage:
     ascii TEXT STYLE
     ascii (TEXT STYLE)...TEXT [STYLE]
 
-Examples:
-       go run main.go "TEXT"
-       go run main.go "TEXT" standard
-       go run main.go "TEXT1" shadow "TEXT2" thinkertoy
-       go run main.go "TEXT1" standard "TEXT2" shadow "TEXT3" thinkertoy
-
 Display ASCII graphics
 
 TEXT:
@@ -48,6 +42,12 @@ Description:
        Note:
           Where it makes sense, the \0NNN octal escape takes precedence over the \0 null character.
           Any octal or hexadecimal values of ASCII characters that cannot be printed will be ignored.
+
+Examples:
+       go run main.go "TEXT"
+       go run main.go "TEXT" standard
+       go run main.go "TEXT1" shadow "TEXT2" thinkertoy
+       go run main.go "TEXT1" standard "TEXT2" shadow "TEXT3" thinkertoy
 
 AUTHOR
        Written by Nicholas Ajwang, Ray Muiruri, and David Ochiel.

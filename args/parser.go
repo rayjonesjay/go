@@ -35,7 +35,6 @@ func Parse(args []string) []DrawInfo {
 		var out []DrawInfo
 
 		for textPosition := 0; textPosition < l; textPosition += 2 {
-
 			text := args[textPosition]
 
 			// default style is Standard
@@ -49,23 +48,13 @@ func Parse(args []string) []DrawInfo {
 				case Standard, Shadow, Thinkertoy:
 					style = args[textPosition+1]
 				default:
-					fmt.Fprintf(os.Stderr, "Style argument not recognized! Passed -> %s Expected -> shadow|standard|thinkeroy\n", args[textPosition+1])
+					_, _ = fmt.Fprintf(os.Stderr, "Style argument not recognized! Passed -> %s Expected -> shadow|standard|thinkertoy\n", args[textPosition+1])
 					os.Exit(1)
 				}
 			}
 			out = append(out, DrawInfo{Text: Escape(text), Style: style})
 		}
 
-		// for i := 0; i < l; i += 2 {
-		// 	j := i + 1
-		// 	text := args[i]
-		// 	style := Standard
-		// 	if j < l {
-		// 		style = args[j]
-		// 	}
-
-		// 	out = append(out, DrawInfo{Text: Escape(text), Style: style})
-		// }
 		return out
 	}
 }

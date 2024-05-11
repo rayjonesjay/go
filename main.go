@@ -1,12 +1,12 @@
 package main
 
 import (
+	"ascii/args"
 	"ascii/graphics"
 	"ascii/special"
 	"fmt"
 	"os"
 	"strings"
-	"ascii/args"
 )
 
 func main() {
@@ -36,19 +36,24 @@ func draw(all []args.DrawInfo) {
 	//we handle such using the utilities from the special chars package
 	for i := 0; i < len(all); i++ {
 		d := all[i]
+		if d.Text == "" {
+			continue
+		}
 		// FIXME: won't fix
 		// current implementation of the special chars package didn't use the actual special characters; e.g.
 		//the implementation used (\\r) instead of (\r)
 		d.Text = strings.ReplaceAll(d.Text, "\b", "\\b")
 		d.Text = strings.ReplaceAll(d.Text, "\r", "\\r")
 
-		// Handle the special characters \t, \b, \r
+		// Handle the special characters \t, \b, \r, \f, \v
 		// Interpret \t characters as two spaces
 		d.Text = strings.ReplaceAll(d.Text, "\t", "  ")
 		// functions in the special package only expect a single line of text for modification,
-		//but our text may include multiple lines, thus, we feed each line separately to the functions
+		//but our text may include multiple lines; thus, we feed each line separately to the functions
 		d.Text = applyPerLine(d.Text, special.SlashB)
 		d.Text = applyPerLine(d.Text, special.SlashR)
+		// Fails to handle "" and "\n"
+		//d.Text = applyPerLine(d.Text, special.SlashFSlashV)
 
 		all[i] = d
 	}

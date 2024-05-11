@@ -2,16 +2,16 @@ package special
 
 import "strings"
 
-// handling \b
+// SlashB handling \b
 func SlashB(s string) string {
 	result := ""
 
 	// change the string to an array of runes
 	runes := []rune(s)
 	for i := 0; i < len(runes); i++ {
-		// check if the current rune is not at the last index and it's \ and the next is b
+		// check if the current rune is not at the last index, and it's '\' and the next is 'b'
 		if i+1 < len(runes) && runes[i] == '\\' && runes[i+1] == 'b' && i+1 != len(runes)-1 {
-			// remove the last element concatinated in the string "result"
+			// remove the last element concatenated in the string "result"
 			if len(result) > 0 {
 				result = result[:len(result)-1]
 			}
@@ -30,24 +30,7 @@ func SlashB(s string) string {
 	return result
 }
 
-// handling \0
-func SlashZero(s string) string {
-	result := ""
-
-	// change the string to an array of runes
-	runes := []rune(s)
-	for i := 0; i < len(runes); i++ {
-		// check if the current rune is not at the last index and it's '\' and the next is '0'
-		if i+1 < len(runes) && runes[i] == '\\' && runes[i+1] == '0' {
-			i++ // skip the '\' and '0' character
-		} else {
-			result += string(runes[i])
-		}
-	}
-	return result
-}
-
-// handling \r
+// SlashR handling \r
 func SlashR(s string) string {
 	result := ""
 	arr := strings.Split(s, "\\r")
@@ -56,7 +39,7 @@ func SlashR(s string) string {
 		// if there is no \r character in the string then the arr will only have one string
 		// in that case just return the string
 		if len(arr) == 1 {
-			return arr[0]			
+			return arr[0]
 		}
 
 		// check if the string after \r is longer than the string before
@@ -81,7 +64,7 @@ func SlashR(s string) string {
 	return result
 }
 
-// handling \f and \v
+// SlashFSlashV handling \f and \v
 func SlashFSlashV(s string) string {
 	// spaces will hold spaces for indentation
 	spaces := ""
@@ -94,13 +77,13 @@ func SlashFSlashV(s string) string {
 	// split the string into fields using the Split function, which splits using 2 delimiters, \f and \v
 	arr := strings.FieldsFunc(s, Split)
 
-	// iterate over the splitted array of strings
+	// iterate over the split array of strings
 	for i := 0; i < len(arr); i++ {
 		// for the second line calculate the number of spaces needed for indentation
 		if i == 0 {
 			for j := 1; j <= len(arr[i]); j++ {
 				spaces += " "
-			}	
+			}
 		} else {
 			// for the rest of the lines, the number of spaces will be less one to avoid counting the \n character
 			for j := 1; j <= len(arr[i])-1; j++ {
@@ -123,12 +106,12 @@ func SlashFSlashV(s string) string {
 
 	// if the original string ended with a space, remove it from the result
 	if s[len(s)-1] == ' ' {
-		return result[0:len(result)-1]
+		return result[0 : len(result)-1]
 	}
 	return result
 }
 
-// Split is a function used by strings.FieldsFunc to enable splitting using 2 delimiters
+// Split is a function used by strings.FieldsFunc to enable splitting using two delimiters
 func Split(r rune) bool {
 	return r == '\f' || r == '\v'
 }

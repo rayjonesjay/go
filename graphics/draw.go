@@ -11,7 +11,8 @@ import (
 	"time"
 )
 
-// checkFileExist checks if a file exist in banner/ else ask user to download
+// checkFileExist checks if the specified banner file exists in the banner/ directory,
+// offers to download the banner file if it does not yet exist
 func checkFileExist(fileName string) string {
 	FileInformation, err := os.Stat(fileName)
 	// Check if the file exists and has a size of 0 if its true ask the user to download a new one
@@ -23,13 +24,14 @@ func checkFileExist(fileName string) string {
 
 		if strings.ToLower(choice) == "yes" || strings.ToLower(choice) == "y" {
 
-			delete(fileName)
+			deleteEmptyBanner(fileName)
 			download(fileName)
 			fmt.Printf("%s download success...\n", strings.ReplaceAll(fileName, "banners/", ""))
 
 		} else if strings.ToLower(choice) == "no" || strings.ToLower(choice) == "n" {
 
-			fmt.Printf("Cannot continue with the program without: %s\n", strings.ReplaceAll(fileName, "banners/", ""))
+			fmt.Printf("Cannot continue with the program without: %s\n",
+				strings.ReplaceAll(fileName, "banners/", ""))
 			os.Exit(1)
 
 		} else {
@@ -39,12 +41,12 @@ func checkFileExist(fileName string) string {
 		}
 
 	}
-	
-	// an error occurred since the err variable is not equal to nil meaning an error was stored in that variable
+
 	if err != nil {
 		// Download the files automatically
 		var userChoice string
-		fmt.Printf("%s does not exist do you wish to download? yes(y)/no(n)\n", strings.ReplaceAll(fileName, "banners/", ""))
+		fmt.Printf("%s does not exist do you wish to download? yes(y)/no(n)\n",
+			strings.ReplaceAll(fileName, "banners/", ""))
 		fmt.Scan(&userChoice)
 
 		if strings.ToLower(userChoice) == "yes" || strings.ToLower(userChoice) == "y" {
@@ -53,14 +55,15 @@ func checkFileExist(fileName string) string {
 			sourceLink := "https://learn.zone01kisumu.ke/git/root/public/src/branch/master/subjects/ascii-art/"
 			fmt.Printf("Wait..fetching resource from.. %s\n", sourceLink)
 
-			duration_to_wait := 2 * time.Second
-			time.Sleep(duration_to_wait)
+			durationToWait := 2 * time.Second
+			time.Sleep(durationToWait)
 
 			fmt.Printf("%s download success...\n", strings.ReplaceAll(fileName, "banners/", ""))
 
 		} else if strings.ToLower(userChoice) == "no" || strings.ToLower(userChoice) == "n" {
 
-			fmt.Printf("Cannot continue with the program without: %s\n", strings.ReplaceAll(fileName, "banners/", ""))
+			fmt.Printf("Cannot continue with the program without: %s\n",
+				strings.ReplaceAll(fileName, "banners/", ""))
 			os.Exit(1)
 
 		} else {
@@ -76,33 +79,33 @@ func checkFileExist(fileName string) string {
 // DirectoryExist() checks if a directory exist
 func directoryExist(dirPath string) bool {
 	_, err := os.Stat(dirPath)
-	// IsNotExist() will return true if the directory does not exist or the error returned is not about file missing
+	// IsNotExist() will return true iff the directory/file at the given file path does not exist
 	return !os.IsNotExist(err)
 }
 
-// delete() deletes the empty file with no ascii art and it is called before callind download to avoid conflict
-func delete(filename string) {
+// deleteEmptyBanner removes the specified empty banner file with no ascii art,
+// and it is called before calling download to avoid conflict
+func deleteEmptyBanner(filename string) {
 	filePath := "$HOME/ascii-art/" + filename
 	filePath = os.ExpandEnv(filePath)
-	delete := exec.Command("rm", filePath)
-	_, err := delete.CombinedOutput()
+	rm := exec.Command("rm", filePath)
+	_, err := rm.CombinedOutput()
 	if err != nil {
 		log.Fatalf("error deleting %v", err)
 	}
 }
 
-// download() files from  "https://learn.zone01kisumu.ke/git/root/public/src/branch/master/subjects/ascii-art/"
+// download banner files from "https://learn.zone01kisumu.ke/git/root/public/src/branch/master/subjects/ascii-art/"
 func download(fileName string) {
 	rawLink := "https://learn.zone01kisumu.ke/git/root/public/raw/branch/master/subjects/ascii-art/"
 	file := strings.ReplaceAll(fileName, "banners/", "")
 	fullPath := rawLink + file
-	download_command := exec.Command("wget", fullPath)
-	_, err := download_command.CombinedOutput()
+	downloadCommand := exec.Command("wget", fullPath)
+	_, err := downloadCommand.CombinedOutput()
 
 	if err != nil {
 
 		log.Fatalf("\n\tDownload attempt failed! Check your internet connection and try again.\n")
-		os.Exit(1)
 
 	} else {
 
@@ -116,20 +119,19 @@ func download(fileName string) {
 	}
 }
 
-// fix extension removes additional extensions from a file and returns only the first extension
-func fixFileExtension(file_name string) string {
+// fixFileExtension removes additional extensions from a file and returns only the first extension
+func fixFileExtension(fileName string) string {
 	// the purpose of this part is to remove the repetitive extension if any for example file.txt.txt -> file.txt
-
-	// file extension - a group of words occurring after a . period character indicating the format of the file
-	position := strings.Index(file_name, ".")
+	// file extension - a group of words occurring after a (.) period character indicating the format of the file
+	position := strings.Index(fileName, ".")
 	if position != -1 {
-		file_name = file_name[:position] + ".txt"
+		fileName = fileName[:position] + ".txt"
 	}
-	return file_name
+	return fileName
 }
 
-// makedirectory() makes banner directory if it does not exist
-func makedirectory(dir string) bool {
+// makeDirectory creates the banner directory if it does not exist
+func makeDirectory(dir string) bool {
 	path := "$HOME/ascii-art/" + dir
 	dir = os.ExpandEnv(path)
 	err := os.Mkdir(dir, 0o775)
@@ -140,16 +142,17 @@ func makedirectory(dir string) bool {
 	return true
 }
 
-// This function takes the name of a file in string format, reads the ascii art inside the file, and maps each ascii art to its rune value
-func ReadBanner(fileName string) map[rune][]string {
-	file_name := strings.ReplaceAll(fileName, "banners/", "")
-	file_name = fixFileExtension(file_name)
-	if !(file_name == "standard.txt" || file_name == "shadow.txt" || file_name == "thinkertoy.txt") {
-		fmt.Printf("%s not a valid banner file. Download it from your source and add it to banner/ directory.\n", file_name)
+// ReadBanner This function takes the name of a file in string format,
+// reads the ascii art inside the file, and maps each ascii art to its rune value
+func ReadBanner(filePath string) map[rune][]string {
+	fileName := strings.ReplaceAll(filePath, "banners/", "")
+	fileName = fixFileExtension(fileName)
+	if !(fileName == "standard.txt" || fileName == "shadow.txt" || fileName == "thinkertoy.txt") {
+		fmt.Printf("%s not a valid banner file. Download it from your source and add it to banner/ directory.\n", fileName)
 		os.Exit(1)
 	}
 	// split the directory and file apart
-	dir, _ := filepath.Split(fileName)
+	dir, _ := filepath.Split(filePath)
 	// if the directory does not exist
 	if !directoryExist(dir) {
 
@@ -159,69 +162,61 @@ func ReadBanner(fileName string) map[rune][]string {
 
 		if strings.ToLower(choice) == "y" || strings.ToLower(choice) == "yes" {
 			// make the directory
-			if makedirectory(dir) {
-				fmt.Printf("%s \ndirectory created!! rerun the program with the required banner files inside.\n\n", strings.ReplaceAll(dir, "/", ""))
+			if makeDirectory(dir) {
+				fmt.Printf("%s \ndirectory created!! rerun the program with the required banner files inside.\n\n",
+					strings.ReplaceAll(dir, "/", ""))
 			}
 		} else if strings.ToLower(choice) == "n" || strings.ToLower(choice) == "no" {
 			fmt.Println("CAUTION: program cannot run without banner/ directory.")
-			os.Exit(0)
+			os.Exit(1)
 		} else {
 			fmt.Printf("Wrong Input: You entered -> %s Expected -> yes(y) or no(n).\n", choice)
 		}
 
 	} else {
 		// check for file existence
-		fileName = checkFileExist(fileName)
+		filePath = checkFileExist(filePath)
 	}
 
-	file, possibleError := os.Open(fileName)
+	file, possibleError := os.Open(filePath)
 	// handle error if the file does not exist error and also other possible errors
 	if possibleError != nil {
 		if os.IsNotExist(possibleError) {
-			os.Exit(1) // file not found exit code
+			// file not found, exit unsuccessfully with code 1
+			os.Exit(1)
 		}
-		log.Fatalf("Failed to open banner file: \"%s\"", fileName)
+		log.Fatalf("Failed to open banner file: \"%s\"", filePath)
 	}
 
 	defer file.Close()
 
 	// create a scanner object
 	scan := bufio.NewScanner(file)
-	// create ascii art map to store the character and its equivalent ascii art
+	// create an ascii art map to store the character and its equivalent ascii art
 	asciiMap := make(map[rune][]string)
 
-	// i is our loop variable and it starts from 32 which is space character
+	// variable i is our loop counter, and it starts from 32 which is space character
 	for i := 32; i <= 126; i++ {
 
 		currentRune := rune(i)
 		// skip one line
 		scan.Scan()
 		// array to store the current ascii art
-		var currentArt []string = make([]string, 8)
+		var currentArt = make([]string, 8)
 
 		// read the next 8 lines
 		for count := 0; count < 8; count++ {
-			// if we reach the end of the file prematurely stop scanning
+			// if we reach the end of the file prematurely, stop scanning
 			if !scan.Scan() {
 				break
 			} else {
 				// append each line we read to the currentArt array
 				line := scan.Text()
-				// Replace tabs with four spaces in the line
-				line = strings.ReplaceAll(line, "\n", "    ")
 				currentArt[count] = line
 			}
 		}
 
 		asciiMap[currentRune] = currentArt
-		var rows int = 8
-		asciiMap[9] = make([]string, rows)
-
-		for i := 0; i < rows; i++ {
-			// in each row there is a slice of 4*space
-			asciiMap[rune(9)][i] = asciiMap[32][0] + asciiMap[32][0] + asciiMap[32][0] + asciiMap[32][0]
-		}
-
 	}
 	// Create an array of arrays to represent four spaces, each eight lines long
 	return asciiMap
