@@ -4,7 +4,6 @@ import (
 	"ascii/args"
 	"fmt"
 	"os"
-	"regexp"
 	"strings"
 )
 
@@ -84,10 +83,7 @@ func Drawln(caret []string, s string, m map[rune][]string) []string {
 	// A caret should ideally be 8 lines, we model the 8 lines with a slice of 8 strings
 	if caret == nil || len(caret) < 8 {
 		buffer := make([]string, 8)
-		for i, cl := range caret {
-			buffer[i] = cl
-		}
-		caret = buffer
+		copy(buffer, caret)
 	}
 
 	if s == "" {
@@ -160,11 +156,12 @@ func CaretEmpty(caret []string) bool {
 
 // AllNewlines returns true if all the string s is composed entirely of newline characters
 func AllNewlines(s string) bool {
-	re := regexp.MustCompile(`^\n+$`)
-	match := re.FindStringSubmatch(s)
-	if match == nil {
-		// No match
-		return false
+
+	//check if all characters in a given string are newLine characters
+	for _, char := range s {
+		if char != '\n'{
+			return false
+		}
 	}
 	// s is composed entirely of newline characters
 	return true
