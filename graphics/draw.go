@@ -25,32 +25,6 @@ const (
 	PATH_TO_BANNER_FILES      = "$PWD/banners/"
 )
 
-// // check if all the three banner files exist
-// func checkAllFilesExist(fileName string) bool {
-// 	_, err := os.Stat(fileName)
-// 	var allExist = true
-// 	if err != nil {
-// 		if os.IsExist(err){
-// 			fmt.Println("***********")
-// 			return true
-// 		}else {
-// 			banner_files := []string{"shadow.txt", "standard.txt", "thinkertoy.txt"}
-
-		
-// 		for _, file := range banner_files {
-// 		_, err := os.Stat(os.ExpandEnv(PATH_TO_BANNER_FILES)+file)
-// 		if err != nil {
-// 			if os.IsNotExist(err){
-// 				allExist = false
-// 				break
-// 			}
-// 		}
-// 	}
-// 		}
-// 	}
-// 	return allExist
-// }
-
 // checkFileExist checks if the specified banner file exists in the banner/ directory,
 // offers to download the banner file if it does not yet exist
 func checkFileExist(fileName string) string {
