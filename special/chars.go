@@ -2,7 +2,7 @@ package special
 
 import "strings"
 
-// SlashB handling \b
+// SlashB applies the escape sequence \b on the given string
 func SlashB(s string) string {
 	result := ""
 
@@ -30,7 +30,7 @@ func SlashB(s string) string {
 	return result
 }
 
-// SlashR handling \r
+// SlashR applies the escape sequence \r on the given string
 func SlashR(s string) string {
 	result := ""
 	arr := strings.Split(s, "\\r")
@@ -64,18 +64,26 @@ func SlashR(s string) string {
 	return result
 }
 
-// SlashFSlashV handling \f and \v
-func SlashFSlashV(s string) string {
+// SlashF applies the escape sequence \f on the given string
+func SlashF(s string) string {
+	return slashFSlashV(s, 'f')
+}
+
+// SlashV applies the escape sequence \v on the given string
+func SlashV(s string) string {
+	return slashFSlashV(s, 'v')
+}
+
+// slashFSlashV is a super function to handle either of the escape sequences \f and \v
+func slashFSlashV(s string, escape rune) string {
 	runes := []rune(s)
 
 	for i := 0; i < len(runes); i++ {
-		if i+1 < len(runes) && (runes[i] == '\\' && runes[i+1] == 'f') || (runes[i] == '\\' && runes[i+1] == 'v') {
+		if i+1 < len(runes) && (runes[i] == '\\' && runes[i+1] == escape) {
 			runes[i] = '\\'
 			runes[i+1] = 'n'
 		}
 	}
-
-	// fmt.Println(string(runes))
 
 	collect := ""
 	result := ""
