@@ -10,13 +10,16 @@ import (
 )
 
 func main() {
+	
 	draws := args.Parse(os.Args[1:])
 	if draws == nil {
 		// nothing to draw, usage error
 		printUsage()
 	}
 	draw(draws)
+
 }
+
 
 // Prints the program usage to the standard output, then exits the program with a non-zero return code
 func printUsage() {
