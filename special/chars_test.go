@@ -55,63 +55,63 @@ func TestSlashR(t *testing.T) {
 }
 
 func TestSlashFSlashV(t *testing.T) {
-	output := SlashFSlashV("hello\\fworld\\fthere\\vthere")
+	output := SlashF("hello\\fworld\\fthere\\fthere")
 	expected := "hello\n     world\n          there\n               there"
 	if output != expected {
 		t.Errorf("Expected %v got %v", expected, output)
 	}
 
-	output2 := SlashFSlashV("hello\\fworld")
+	output2 := SlashF("hello\\fworld")
 	expected2 := "hello\n     world"
 	if output2 != expected2 {
 		t.Errorf("Expected %v got %v", expected2, output2)
 	}
 
-	output3 := SlashFSlashV("hello\\fworld\\fhey\\f")
+	output3 := SlashF("hello\\fworld\\fhey\\f")
 	expected3 := "hello\n     world\n          hey\n             "
 	if output3 != expected3 {
 		t.Errorf("Expected %v got %v", expected3, output3)
 	}
 	// fmt.Println(output3)
 
-	output4 := SlashFSlashV("hello")
+	output4 := SlashV("hello")
 	expected4 := "hello"
 	if output4 != expected4 {
 		t.Errorf("Expected %v got %v", expected4, output4)
 	}
 
-	output5 := SlashFSlashV("\\vhello\\v\\f")
+	output5 := SlashV("\\vhello\\v\\v")
 	expected5 := "\nhello\n\n     "
 	if output5 != expected5 {
 		t.Errorf("Expected %v got %v", expected5, output5)
 	}
 
-	output6 := SlashFSlashV("hello\\v\\f\\vthere")
+	output6 := SlashV("hello\\v\\v\\vthere")
 	expected6 := "hello\n\n\n     there"
 	if output6 != expected6 {
 		t.Errorf("Expected %v got %v", expected6, output6)
 	}
 	// fmt.Println(output6)
 
-	output7 := SlashFSlashV("\n")
+	output7 := SlashV("\n")
 	expected7 := "\n"
 	if output7 != expected7 {
 		t.Errorf("Expected %v got %v", expected7, output7)
 	}
 
-	output8 := SlashFSlashV("")
+	output8 := SlashV("")
 	expected8 := ""
 	if output8 != expected8 {
 		t.Errorf("Expected %v got %v", expected8, output8)
 	}
 
-	output9 := SlashFSlashV("g\\fhello")
+	output9 := SlashF("g\\fhello")
 	expected9 := "g\n hello"
 	if output9 != expected9 {
 		t.Errorf("Expected %v got %v", expected9, output9)
 	}
 
-	output10 := SlashFSlashV("hello\\fg")
+	output10 := SlashF("hello\\fg")
 	expected10 := "hello\n     g"
 	if output10 != expected10 {
 		t.Errorf("Expected %v got %v", expected10, output10)
