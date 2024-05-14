@@ -106,7 +106,7 @@ func directoryExist(dirPath string) bool {
 }
 
 // deleteEmptyBanner removes the specified empty banner file with no ascii art,
-// and it is called before calling download to avoid conflict
+// and it is called before calling download to avoid conflict	
 func deleteEmptyBanner(filename string) {
 	filePath := CURRENT_WORKING_DIRECTORY + filename
 	filePath = os.ExpandEnv(filePath)
