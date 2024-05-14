@@ -101,12 +101,14 @@ func Drawln(caret []string, s string, m map[rune][]string) []string {
 		if !ok {
 			// The current character does not exist in the (character -> graphics) map, its most likely
 			//a non-ascii character or a non-printable ASCII character
-			if char < 32 {
-				fmt.Printf("Encountered Non-printable ASCII character: \"%c\"\n", char)
+			if char < 32 || char == 127 {
+				//fmt.Printf("Encountered Non-printable ASCII character: \"%c\"\n", char)
+				// Ignore special ASCII characters including the delete character
+				continue
 			} else {
 				fmt.Printf("Invalid ASCII character: \"%c\"\n", char)
+				os.Exit(1)
 			}
-			os.Exit(1)
 		}
 
 		if len(caret) != len(g) {
