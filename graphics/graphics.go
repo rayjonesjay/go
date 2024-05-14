@@ -84,8 +84,9 @@ func Drawln(caret []string, s string, m map[rune][]string) []string {
 	if caret == nil || len(caret) < 8 {
 		buffer := make([]string, 8)
 		copy(buffer, caret)
+		caret = buffer
 	}
-
+	
 	if s == "" {
 		return caret
 	}
