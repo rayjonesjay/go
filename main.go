@@ -34,6 +34,7 @@ func printUsage() {
 func draw(all []args.DrawInfo) {
 	// The text received from the commandline may include special ASCII escape characters as \r, \v, \b
 	//we handle such using the utilities from the special chars package
+	hasBell := false
 	for i := 0; i < len(all); i++ {
 		d := all[i]
 		if d.Text == "" {
@@ -51,10 +52,20 @@ func draw(all []args.DrawInfo) {
 		d.Text = applyPerLine(d.Text, special.SlashV, "\v", "\\v")
 		d.Text = applyPerLine(d.Text, special.SlashF, "\f", "\\f")
 
+		// Handle \a
+		if strings.ContainsRune(d.Text, '\a') {
+			hasBell = true
+			d.Text = strings.ReplaceAll(d.Text, "\a", "")
+		}
+
 		all[i] = d
 	}
 	out := graphics.Draw(all)
 	fmt.Print(out)
+	if hasBell {
+		// Some bell was specified, play a beep sound in supported terminal
+		fmt.Print('\a')
+	}
 }
 
 // applyPerLine applies the function f separately to each line of the string s, and returns the results as a string
