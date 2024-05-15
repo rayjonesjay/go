@@ -3,6 +3,7 @@ package main
 import (
 	"ascii/args"
 	"ascii/graphics"
+	"ascii/sound"
 	"ascii/special"
 	"fmt"
 	"os"
@@ -32,8 +33,8 @@ func printUsage() {
 
 // Given a series of [args.DrawInfo] items, extract the drawing information and generate the expected graphics
 func draw(all []args.DrawInfo) {
-	// The text received from the commandline may include special ASCII escape characters as \r, \v, \b
-	//we handle such using the utilities from the special chars package
+	// The text received from the commandline may include special ASCII escape characters as \t, \a, \r, \v, \b, and \f
+	//we handle such characters using the utilities from the `special` chars package
 	hasBell := false
 	for i := 0; i < len(all); i++ {
 		d := all[i]
@@ -63,8 +64,8 @@ func draw(all []args.DrawInfo) {
 	out := graphics.Draw(all)
 	fmt.Print(out)
 	if hasBell {
-		// Some bell was specified, play a beep sound in supported terminal
-		fmt.Print('\a')
+		// Some ASCII bell character was specified, play a beep sound
+		sound.Beep()
 	}
 }
 
