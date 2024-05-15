@@ -86,7 +86,7 @@ func Drawln(caret []string, s string, m map[rune][]string) []string {
 		copy(buffer, caret)
 		caret = buffer
 	}
-	
+
 	if s == "" {
 		return caret
 	}
@@ -162,7 +162,7 @@ func AllNewlines(s string) bool {
 
 	//check if all characters in a given string are newLine characters
 	for _, char := range s {
-		if char != '\n'{
+		if char != '\n' {
 			return false
 		}
 	}
