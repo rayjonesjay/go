@@ -38,3 +38,9 @@ echo -e 'hello There 1 to 2!' # expect "hello There 1 to 2!"
 echo -e "1a\"#FdwHywR&/()=" # expect "1a"#FdwHywR&/()="
 
 echo -e '\!" #$%&'"'"'()*+,-./' # expect "\!" #$%&'()*+,-./"
+
+echo -e $'Hello\x19World'
+echo -e $'Hello\x7FWorld'
+echo -e $'Hello\x20World'
+echo -e $'Hello\x200World'
+echo -e "Oops 😅🤭! Sorry 🤪"
