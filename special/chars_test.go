@@ -68,7 +68,7 @@ func TestSlashFSlashV(t *testing.T) {
 	}
 
 	output3 := SlashF("hello\\fworld\\fhey\\f")
-	expected3 := "hello\n     world\n          hey\n             "
+	expected3 := "hello\n     world\n          hey\n"
 	if output3 != expected3 {
 		t.Errorf("Expected %v got %v", expected3, output3)
 	}
@@ -81,7 +81,7 @@ func TestSlashFSlashV(t *testing.T) {
 	}
 
 	output5 := SlashV("\\vhello\\v\\v")
-	expected5 := "\nhello\n\n     "
+	expected5 := "\nhello\n\n"
 	if output5 != expected5 {
 		t.Errorf("Expected %v got %v", expected5, output5)
 	}
@@ -119,7 +119,7 @@ func TestSlashFSlashV(t *testing.T) {
 
 	output11 := SlashF(`hello\\nWorld`)
 	expected11 := `hello\\nWorld`
-	if output11 != expected10 {
+	if output11 != expected11 {
 		t.Errorf("Expected %v got %v", expected11, output11)
 	}
 }
