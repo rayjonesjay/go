@@ -116,4 +116,10 @@ func TestSlashFSlashV(t *testing.T) {
 	if output10 != expected10 {
 		t.Errorf("Expected %v got %v", expected10, output10)
 	}
+
+	output11 := SlashF(`hello\\nWorld`)
+	expected11 := `hello\\nWorld`
+	if output11 != expected10 {
+		t.Errorf("Expected %v got %v", expected11, output11)
+	}
 }
