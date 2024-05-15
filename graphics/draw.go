@@ -11,21 +11,22 @@ import (
 )
 
 var (
-	// FAIL To be called if a program was run in the wrong way
+
+	// To be called if a program was run in the wrong way
 	FAIL = func() { os.Exit(1) }
 
-	// PASS To be called if a program run successfully
+	// To be called if a program run successfully
 	PASS = func() { os.Exit(0) }
 )
 
 const (
-	CurrentWorkingDirectory = "$PWD/"
-	PathToUrlFile           = CurrentWorkingDirectory + "plain/urls.txt"
-	PathToBannerFiles       = "$PWD/banners/"
+	CURRENT_WORKING_DIRECTORY = "$PWD/"
+	PATH_TO_URL_FILE          = CURRENT_WORKING_DIRECTORY + "plain/urls.txt"
+	PATH_TO_BANNER_FILES      = CURRENT_WORKING_DIRECTORY + "banners/"
 )
 
 // checkFileExist checks if the specified banner file exists in the banner/ directory,
-// offers to download the banner file if it does not yet exist
+// offers to download the banner file if it does not yet existCURRENT_WORKING_DIRECTORY
 func checkFileExist(fileName string) string {
 	FileInformation, err := os.Stat(fileName)
 
@@ -43,23 +44,26 @@ func checkFileExist(fileName string) string {
 		choice = removeExtraSpace(choice)
 
 		if strings.ToLower(choice) == "yes" || strings.ToLower(choice) == "y" {
+
 			deleteEmptyBanner(fileName)
 			download(fileName)
-			fmt.Printf("%s download success... rerun the program!\n", strings.ReplaceAll(fileName, "banners/", ""))
-			PASS()
 		} else if strings.ToLower(choice) == "no" || strings.ToLower(choice) == "n" {
+
 			fmt.Printf("Cannot continue with the program without: %s\n",
 				strings.ReplaceAll(fileName, "banners/", ""))
 			FAIL()
+
 		} else {
+
 			fmt.Println("WRONG user input! Exiting...")
 			FAIL()
 		}
+
 	}
 
 	if err != nil {
 		// Download the files automatically
-		fmt.Printf("%s does not exist do you wish to download or or get all files ? yes(y) no(n) all(a): ",
+		fmt.Printf("%s does not exist do you wish to download or get all files ? yes(y) no(n) all(a): ",
 			strings.ReplaceAll(fileName, "banners/", ""))
 
 		// make a reader
@@ -70,19 +74,23 @@ func checkFileExist(fileName string) string {
 
 		if err != nil {
 			log.Fatalf("error reading choice: check delimeter %v\n", err)
+			FAIL()
 		}
 
 		if strings.ToLower(userChoice) == "yes" || strings.ToLower(userChoice) == "y" {
 			download(fileName)
-			PASS()
 		} else if strings.ToLower(userChoice) == "no" || strings.ToLower(userChoice) == "n" {
+
 			fmt.Printf("Cannot continue with the program without: %s\n",
 				strings.ReplaceAll(fileName, "banners/", ""))
 			FAIL()
+
 		} else if strings.ToLower(userChoice) == "all" || strings.ToLower(userChoice) == "a" {
+
 			downloadALL()
 			PASS()
 		} else {
+
 			fmt.Printf("Wrong Input: You entered -> %s Expected -> yes(y) or no(n).\n", userChoice)
 			FAIL()
 		}
@@ -92,20 +100,20 @@ func checkFileExist(fileName string) string {
 
 // DirectoryExist() checks if a directory exist
 func directoryExist(dirPath string) bool {
-	_, err := os.Stat(dirPath)
+	_, file_status_error := os.Stat(dirPath)
 	// IsNotExist() will return true iff the directory/file at the given file path does not exist
-	return !os.IsNotExist(err)
+	return !os.IsNotExist(file_status_error)
 }
 
 // deleteEmptyBanner removes the specified empty banner file with no ascii art,
 // and it is called before calling download to avoid conflict
 func deleteEmptyBanner(filename string) {
-	filePath := CurrentWorkingDirectory + filename
+	filePath := CURRENT_WORKING_DIRECTORY + filename
 	filePath = os.ExpandEnv(filePath)
 	rm := exec.Command("rm", filePath)
-	_, err := rm.CombinedOutput()
-	if err != nil {
-		log.Fatalf("error deleting %v", err)
+	_, remove_error := rm.CombinedOutput()
+	if remove_error != nil {
+		log.Fatalf("error deleting %v", remove_error)
 	}
 }
 
@@ -115,65 +123,77 @@ func download(fileName string) {
 	file := strings.ReplaceAll(fileName, "banners/", "")
 	fullPath := rawLink + file
 	downloadCommand := exec.Command("wget", fullPath)
-	_, err := downloadCommand.CombinedOutput()
+	_, download_error := downloadCommand.CombinedOutput()
 
-	if err != nil {
+	if download_error != nil {
 		log.Fatalf("\n\tDownload attempt failed! Check your internet connection and try again.\n")
 	} else {
+
 		move := exec.Command("mv", file, "banners/")
-		out, err := move.CombinedOutput()
-		if err != nil {
+		output, move_error := move.CombinedOutput()
+		if move_error != nil {
 			// check error occurred when moving file to banners/
-			fmt.Fprintf(os.Stderr, "error: %T\n", err)
-			fmt.Println(out)
+			fmt.Fprintf(os.Stderr, "error: %T\n", move_error)
+			fmt.Println(output)
 		}
 		fmt.Println()
 		fmt.Printf("%s downloaded successfully.. rerun the program\n", strings.Replace(fileName, "banners/", "", -1))
-		//PASS()
+		PASS()
 	}
 }
 
 // downloads all the banner files at once
 func downloadALL() {
-	//first of all delete the banner files
-	bannerFiles := []string{"shadow.txt", "standard.txt", "thinkertoy.txt"}
-	path := os.ExpandEnv(PathToBannerFiles)
-	for _, file := range bannerFiles {
+	urlfile := "plain/urls.txt"
+	_, err := os.Stat(urlfile)
+
+	if os.IsNotExist(err) {
+		fmt.Println("urls.txt does not exist")
+		FAIL()
+	}
+	// first of all delete the banner files
+	banner_files := []string{"shadow.txt", "standard.txt", "thinkertoy.txt"}
+	path := os.ExpandEnv(PATH_TO_BANNER_FILES)
+	for _, file := range banner_files {
 		_, err := os.Stat(file)
 		if err != nil {
 			if !os.IsNotExist(err) {
 				{
-				} //same as do nothing
+				} // same as do nothing
 			}
 		} else {
-			rm := exec.Command("rm", path+file)
-			out, err := rm.CombinedOutput()
-			if err != nil {
-				log.Fatalf("Error Deleting %s %v\n", out, err)
+
+			delete := exec.Command("rm", path+file)
+			out, delete_error := delete.CombinedOutput()
+			if delete_error != nil {
+				log.Fatalf("Error Deleting %s %v\n", out, delete_error)
+				FAIL()
 			}
 		}
 	}
 
-	downloadAll := exec.Command("wget", "-i", os.ExpandEnv(PathToUrlFile))
-	out, err := downloadAll.CombinedOutput()
-	if err != nil {
+	downloadAll := exec.Command("wget", "-i", os.ExpandEnv(PATH_TO_URL_FILE))
+	out, web_get_err := downloadAll.CombinedOutput()
+	if web_get_err != nil {
 		// check error occurred when moving file to banners/
-		fmt.Fprintf(os.Stderr, "error: %T\n", err)
-		fmt.Println(out)
+		fmt.Fprintf(os.Stderr, "error: %T\n", web_get_err)
+		fmt.Println(string(out))
 	}
-	for _, file := range bannerFiles {
+	for _, file := range banner_files {
 		moveFileToBannerDir(file)
 	}
-	fmt.Printf("All Banner Files downloaded Successfully... rerun the program\n")
+	fmt.Printf("All banner Files downloaded Successfully... rerun the program\n")
 	PASS()
 }
 
 // after downloadAll() the files are moved to banners directory
 func moveFileToBannerDir(file string) {
-	move := exec.Command("mv", file, os.ExpandEnv(PathToBannerFiles))
-	out, err := move.CombinedOutput()
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error: %v Output: %s ", err, out)
+	path := os.ExpandEnv(PATH_TO_BANNER_FILES)
+	move := exec.Command("mv", file, path)
+	fmt.Println(path + file)
+	out, move_err := move.CombinedOutput()
+	if move_err != nil {
+		fmt.Fprintf(os.Stderr, "ErrorA: %v Output: %s ", move_err, out)
 	}
 }
 
@@ -190,7 +210,7 @@ func fixFileExtension(fileName string) string {
 
 // makeDirectory creates the banner directory if it does not exist
 func makeDirectory(dir string) bool {
-	path := CurrentWorkingDirectory + dir
+	path := CURRENT_WORKING_DIRECTORY + dir
 	dir = os.ExpandEnv(path)
 	err := os.Mkdir(dir, 0o775)
 	if err != nil {
@@ -218,13 +238,15 @@ func ReadBanner(filePath string) map[rune][]string {
 	dir, _ := filepath.Split(filePath)
 	// if the directory does not exist
 	if !directoryExist(dir) {
+
 		fmt.Printf("%s does not exist. Do you wish to create it in order for the program to run?  yes(y) or no(n): ", dir)
 		reader := bufio.NewReader(os.Stdin)
-		choice, err := reader.ReadString('\n')
+		choice, reading_error := reader.ReadString('\n')
 		choice = removeExtraSpace(choice)
 
-		if err != nil {
-			log.Fatalf("error reading choice: check delimeter %v\n", err)
+		if reading_error != nil {
+			log.Fatalf("error reading choice: check delimeter %v\n", reading_error)
+			FAIL()
 		}
 
 		if strings.ToLower(choice) == "y" || strings.ToLower(choice) == "yes" {
@@ -240,15 +262,16 @@ func ReadBanner(filePath string) map[rune][]string {
 		} else {
 			fmt.Printf(" Wrong Input: You entered -> %s Expected -> yes(y) or no(n).\n", choice)
 		}
+
 	} else {
 		// check for file existence
 		filePath = checkFileExist(filePath)
 	}
 
-	file, possibleError := os.Open(filePath)
+	file, openingFileError := os.Open(filePath)
 	// handle error if the file does not exist error and also other possible errors
-	if possibleError != nil {
-		if os.IsNotExist(possibleError) {
+	if openingFileError != nil {
+		if os.IsNotExist(openingFileError) {
 			// file not found, exit unsuccessfully with code 1
 			os.Exit(1)
 		}
@@ -264,6 +287,7 @@ func ReadBanner(filePath string) map[rune][]string {
 
 	// variable i is our loop counter, and it starts from 32 which is space character
 	for i := 32; i <= 126; i++ {
+
 		currentRune := rune(i)
 		// skip one line
 		scan.Scan()
