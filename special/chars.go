@@ -1,8 +1,10 @@
 package special
 
-import "strings"
+import (
+	"strings"
+)
 
-// SlashB handling \b
+// SlashB applies the escape sequence \b on the given string
 func SlashB(s string) string {
 	result := ""
 
@@ -30,7 +32,7 @@ func SlashB(s string) string {
 	return result
 }
 
-// SlashR handling \r
+// SlashR applies the escape sequence \r on the given string
 func SlashR(s string) string {
 	result := ""
 	arr := strings.Split(s, "\\r")
@@ -64,47 +66,46 @@ func SlashR(s string) string {
 	return result
 }
 
-// SlashFSlashV handling \f and \v
-func SlashFSlashV(s string) string {
-	runes := []rune(s)
+// SlashF applies the escape sequence \f on the given string
+func SlashF(s string) string {
+	return slashFSlashV(s, 'f')
+}
 
-	for i := 0; i < len(runes); i++ {
-		if i+1 < len(runes) && (runes[i] == '\\' && runes[i+1] == 'f') || (runes[i] == '\\' && runes[i+1] == 'v') {
-			runes[i] = '\\'
-			runes[i+1] = 'n'
+// SlashV applies the escape sequence \v on the given string
+func SlashV(s string) string {
+	return slashFSlashV(s, 'v')
+}
+
+// slashFSlashV is a super function to handle either of the escape sequences \f and \v
+func slashFSlashV(s string, escape rune) string {
+	// Split by the given escape sequence
+	sp := strings.Split(s, `\`+string(escape))
+	// We need a deep copy of sp
+	sp2 := make([]string, len(sp))
+	copy(sp2, sp)
+
+	// Loop over each split
+	for i, s := range sp {
+		// Skip the first split, \r takes effect on the characters after its position in the string
+		if i != 0 {
+			// b will be modifying the contents of sp, while b2 will be modifying the contents of sp2
+			var b, b2 strings.Builder
+			if s != "" {
+				// The current split is an empty string, this is the case when we split when the split target
+				//is at the end of the string, or they are chained together, one after the other
+				// In which case we indent according to the size of the previous non-empty string
+				b.WriteString(strings.Repeat(" ", len(sp2[i-1])))
+			}
+			// b2 keeps track of the spaces after the previous line, regardless of whether the split is an empty string
+			b2.WriteString(strings.Repeat(" ", len(sp2[i-1])))
+
+			// Update the current split
+			b.WriteString(s)
+			b2.WriteString(s)
+			sp[i] = b.String()
+			sp2[i] = b2.String()
 		}
 	}
 
-	// fmt.Println(string(runes))
-
-	collect := ""
-	result := ""
-	spaces := ""
-
-	for j := 0; j < len(runes); j++ {
-		if j+1 < len(runes) && runes[j] == '\\' && runes[j+1] == 'n' {
-			if (len(collect) > 0 && j >= 2 && runes[j-1] != 'n' && runes[j-2] != '\\') || j == 1 {
-				for k := 0; k < len(collect); k++ {
-					spaces += " "
-				}
-			} else if len(collect) < 0 {
-				result += "\n"
-			}
-
-			if j+3 < len(runes) && runes[j+2] == '\\' && runes[j+3] == 'n' {
-				result += collect + "\n"
-			} else {
-				result += collect + "\n" + spaces
-			}
-
-			if (j >= 2 && runes[j-1] != 'n' && runes[j-2] != '\\') || j == 1 {
-				collect = ""
-			}
-			j++
-		} else {
-			collect += string(runes[j])
-		}
-	}
-
-	return result + collect
+	return strings.Join(sp, "\n")
 }

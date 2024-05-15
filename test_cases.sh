@@ -29,3 +29,18 @@ echo -e '\x61\x62\x0A\x61\x62\x0A'
 
 echo -e 't\x61\x62b\x0At\x61\x62b'
 echo -e 't\x61\x62b\x0At\x61\x62b\x0A'
+
+echo -e "Hello\f\fWorld\fThere\fab"
+echo -e "Hello\f\fWorld\fThere\f"
+
+echo -e "Ring The Bell\a"
+echo -e 'hello There 1 to 2!' # expect "hello There 1 to 2!"
+echo -e "1a\"#FdwHywR&/()=" # expect "1a"#FdwHywR&/()="
+
+echo -e '\!" #$%&'"'"'()*+,-./' # expect "\!" #$%&'()*+,-./"
+
+echo -e $'Hello\x19World'
+echo -e $'Hello\x7FWorld'
+echo -e $'Hello\x20World'
+echo -e $'Hello\x200World'
+echo -e "Oops 😅🤭! Sorry 🤪"

@@ -10,9 +10,67 @@ Ascii-art is a program that receives a `string` as an argument and displays the 
 
 ## Usage: how to use the program
 
-```bash
-go run main.go "message as string"
-```
+Assuming the current working directory, is set to the repository's root:
+
+1. Displaying the ASCII graphics of the text `Hello` using the default `standard` banner:
+   
+   ```shell
+   ascii-art$ go run . "Hello"
+    _    _          _   _          
+   | |  | |        | | | |         
+   | |__| |   ___  | | | |   ___   
+   |  __  |  / _ \ | | | |  / _ \  
+   | |  | | |  __/ | | | | | (_) | 
+   |_|  |_|  \___| |_| |_|  \___/  
+                                   
+                                   
+   ascii-art$
+   ```
+
+2. Displaying the ASCII graphics of the text `Hello` with the `shadow` banner:
+   
+   ```shell
+   ascii-art$ go run . "Hello" shadow
+                                    
+   _|    _|          _| _|          
+   _|    _|   _|_|   _| _|   _|_|   
+   _|_|_|_| _|_|_|_| _| _| _|    _| 
+   _|    _| _|       _| _| _|    _| 
+   _|    _|   _|_|_| _| _|   _|_|   
+                                    
+                                    
+   ascii-art$
+   ```
+
+3. Displaying the ASCII graphics of the text `Hello` with the `thinkertoy` banner:
+   
+   ```shell
+   ascii-art$ go run . "Hello" thinkertoy
+                    
+   o  o     o o     
+   |  |     | |     
+   O--O o-o | | o-o 
+   |  | |-' | | | | 
+   o  o o-o o o o-o 
+                    
+                    
+   ascii-art$
+   ```
+
+4. Mixing words with the different banner files:
+   
+   ```shell
+   ascii-art$ go run . "Now " standard "See " shadow "This" thinkertoy 
+    _   _                                                                             
+   | \ | |                            _|_|_|                         o-O-o o          
+   |  \| |   ___   __      __       _|         _|_|     _|_|           |   |    o     
+   | . ` |  / _ \  \ \ /\ / /         _|_|   _|_|_|_| _|_|_|_|         |   O--o   o-o 
+   | |\  | | (_) |  \ V  V /              _| _|       _|               |   |  | |  \  
+   |_| \_|  \___/    \_/\_/         _|_|_|     _|_|_|   _|_|_|         o   o  o | o-o 
+                                                                                      
+                                                                                      
+   ascii-art$ 
+   ```
 
 ## Implementation details: algorithm
 
