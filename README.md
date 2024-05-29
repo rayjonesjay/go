@@ -1,12 +1,12 @@
 ## Description
 
-Ascii-art is a program that receives a `string` as an argument and displays the `string` in a graphic representation using ASCII.
+Ascii-art-fs is a program that receives two categories strings (`text` to be printed and `style` to be used) as arguments and outputs the `text` to be printed in a graphic representation of the specified `style` using ASCII.
 
 ## Authors
 
-- [x] najwang
-- [x] ramuiruri
-- [x] dochiel
+- [x] [najwang](https://learn.zone01kisumu.ke/git/najwang)
+- [x] [ramuiruri](https://learn.zone01kisumu.ke/git/ramuiruri)
+- [x] [dochiel](https://learn.zone01kisumu.ke/git/dochiel)
 
 ## Usage: how to use the program
 
