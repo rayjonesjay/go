@@ -1,10 +1,10 @@
 package graphics
 
 import (
+	. "ascii/data"
 	"fmt"
 	"os"
 	"strings"
-	"ascii/args"
 )
 
 // GMap represents a (character -> graphics) map
@@ -18,7 +18,7 @@ var styleCache = make(StyleMap)
 
 // Draw takes a list of ASCII text to be displayed with their respective banner style, maps all the text to their
 // respective banner graphics style, and returns a string that draws the graphics
-func Draw(all []args.DrawInfo) string {
+func Draw(all []DrawInfo) string {
 	// Check if the given slice of text to be drawn are all empty strings,
 	//in which case there really is nothing to be drawn
 	allEmpty := true
