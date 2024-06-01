@@ -60,4 +60,10 @@ func TestParse(t *testing.T) {
 		[]string{"Hello", "thinkertoy", "There", "shadow", "World"},
 		[]DrawInfo{{"Hello", Thinkertoy}, {"There", Shadow}, {"World", Standard}},
 	)
+
+	// //6. go run . --output=file.txt hello standard
+	// helperParse(t,
+	// 	[]string{"--output.txt","hello","standard"},
+	// 	[]DrawInfo{{"hello", Standard}},
+	// )
 }

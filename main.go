@@ -8,11 +8,11 @@ import (
 
 func main() {
 
-	draws := args.Parse(os.Args[1:])
+	draws, outputFile := args.Parse(os.Args[1:])
 	if draws == nil {
 		// nothing to draw
 		output.PrintUsage()
 	}
-	output.Draw(draws)
+	output.Draw(draws, outputFile)
 
 }
