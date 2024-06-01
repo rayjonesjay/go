@@ -1,6 +1,7 @@
 package args
 
 import (
+	"ascii/args/flags"
 	. "ascii/data"
 	"ascii/help"
 	"fmt"
@@ -18,10 +19,10 @@ func Parse(args []string) ([]DrawInfo, string) {
 	outputFile := ""
 
 	// check if flag was passed and is valid
-	if IsValidFlag(args) {
+	if flags.IsValidFlag(args) {
 		flagAndFile := args[0]
 		var inspectError error
-		outputFile, inspectError = InspectFlagAndFile(flagAndFile)
+		outputFile, inspectError = flags.InspectFlagAndFile(flagAndFile)
 		if inspectError != nil {
 			fmt.Printf("Usage Error: %s\n", inspectError.Error())
 			help.PrintUsage()
