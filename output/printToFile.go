@@ -5,45 +5,40 @@ import (
 	"os"
 	"strings"
 
-	"ascii/args"
+	. "ascii/data"
 	"ascii/graphics"
 	"ascii/sound"
 	"ascii/special"
 )
 
-// Given a series of [args.DrawInfo] items, extract the drawing information and generate the expected graphics
-func Draw(all []args.DrawInfo, outputFile string) {
+// Draw given a series of [DrawInfo] items, extract the drawing information and generate the expected graphics
+func Draw(all []DrawInfo, outputFile string) {
 	// The text received from the commandline may include special ASCII escape characters as \t, \a, \r, \v, \b, and \f
 	// we handle such characters using the utilities from the `special` chars package
 	hasBell := false
 	for i := 0; i < len(all); i++ {
-		d := all[i]
-		if d.Text == "" {
+		drawInfo := all[i]
+		if drawInfo.Text == "" {
 			continue
 		}
 		// Handle the special characters \t, \b, \r, \f, \v
-		// Interpret \t characters as two spaces
-		d.Text = strings.ReplaceAll(d.Text, "\t", "  ")
-		// The implementation of the `special` chars package didn't use the actual special characters; e.g.
-		// the implementation used (\\r) instead of (\r)
-		// functions in the special package only expect a single line of text for modification,
-		// but our text may include multiple lines; thus, we feed each line separately to the functions
-		d.Text = applyPerLine(d.Text, special.SlashB, "\b", "\\b")
-		d.Text = applyPerLine(d.Text, special.SlashR, "\r", "\\r")
-		d.Text = applyPerLine(d.Text, special.SlashV, "\v", "\\v")
-		d.Text = applyPerLine(d.Text, special.SlashF, "\f", "\\f")
+		drawInfo.Text = strings.ReplaceAll(drawInfo.Text, "\t", "  ")
+		drawInfo.Text = applyPerLine(drawInfo.Text, special.SlashB, "\b", "\\b")
+		drawInfo.Text = applyPerLine(drawInfo.Text, special.SlashR, "\r", "\\r")
+		drawInfo.Text = applyPerLine(drawInfo.Text, special.SlashV, "\v", "\\v")
+		drawInfo.Text = applyPerLine(drawInfo.Text, special.SlashF, "\f", "\\f")
 
 		// Handle \a
-		if strings.ContainsRune(d.Text, '\a') {
+		if strings.ContainsRune(drawInfo.Text, '\a') {
 			hasBell = true
-			d.Text = strings.ReplaceAll(d.Text, "\a", "")
+			drawInfo.Text = strings.ReplaceAll(drawInfo.Text, "\a", "")
 		}
 
-		all[i] = d
+		all[i] = drawInfo
 	}
 
 	out := graphics.Draw(all)
-	
+
 	if outputFile != "" {
 		fd, openError := os.OpenFile(outputFile, os.O_CREATE|os.O_RDWR|os.O_TRUNC, 0o666)
 		if openError != nil {
