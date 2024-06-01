@@ -1,11 +1,11 @@
-package output
+package help
 
 import (
 	"fmt"
 	"os"
 )
 
-// Prints the program usage to the standard output, then exits the program with a non-zero return code
+// PrintUsage Prints the program usage to the standard output, then exits the program with a non-zero return code
 func PrintUsage() {
 	usage, err := os.ReadFile("plain/usage.txt")
 	if err != nil {
