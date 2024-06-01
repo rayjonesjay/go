@@ -1,7 +1,10 @@
 package args
 
-import "ascii/output"
-
+import (
+	. "ascii/data"
+	"ascii/help"
+	"fmt"
+)
 
 const (
 	Shadow     = "shadow"
@@ -9,37 +12,35 @@ const (
 	Thinkertoy = "thinkertoy"
 )
 
-// DrawInfo holds the text to be drawn, and with which style it is to be drawn
-type DrawInfo struct {
-	Text  string
-	Style string
-}
-
-// Takes the flag '--output=file.txt' together with text and style to be printed
+// Parse takes the flag '--output=file.txt' together with text and style to be printed
 func Parse(args []string) ([]DrawInfo, string) {
-	length_of_arguments := len(args)
-
+	lengthOfArguments := len(args)
 	outputFile := ""
 
 	// check if flag was passed and is valid
 	if IsValidFlag(args) {
 		flagAndFile := args[0]
-		OutputFile, inspectError := InspectFlagAndFile(flagAndFile)
-		if inspectError == nil && OutputFile != "" {
-			outputFile = outputFile
+		var inspectError error
+		outputFile, inspectError = InspectFlagAndFile(flagAndFile)
+		if inspectError != nil {
+			fmt.Printf("Usage Error: %s\n", inspectError.Error())
+			help.PrintUsage()
 		}
 		args = args[1:]
-		length_of_arguments = (length_of_arguments - 1)
+		lengthOfArguments = lengthOfArguments - 1
 	}
 
-	if length_of_arguments < 1 {
+	if lengthOfArguments < 1 {
 		return nil, outputFile
-	} else if length_of_arguments == 1 {
-
+	} else if lengthOfArguments == 1 {
 		text := args[0]
-		return []DrawInfo{{Text: Escape(text), Style: Standard}}, outputFile
-
+		drawInfo := DrawInfo{Text: Escape(text), Style: Standard}
+		return []DrawInfo{drawInfo}, outputFile
+	} else if lengthOfArguments == 2 {
+		text, style := args[0], args[1]
+		drawInfo := DrawInfo{Text: Escape(text), Style: style}
+		return []DrawInfo{drawInfo}, outputFile
 	}
 
-	return []DrawInfo{}, outputFile
+	return nil, outputFile
 }
