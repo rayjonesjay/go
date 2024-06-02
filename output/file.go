@@ -48,7 +48,7 @@ func Draw(all []DrawInfo, outputFile string) {
 
 		_, writeError := fd.WriteString(out)
 		if writeError != nil {
-			fmt.Fprintf(os.Stderr, "error writing  to  file\n")
+			fmt.Fprintf(os.Stderr, "error writing to file\n")
 			os.Exit(1)
 		}
 		return
