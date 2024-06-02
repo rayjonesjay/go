@@ -2,7 +2,7 @@ package args
 
 import (
 	"ascii/args/flags"
-	. "ascii/data"
+	"ascii/data"
 	"ascii/help"
 	"fmt"
 )
@@ -15,7 +15,7 @@ const (
 
 // ParserOut structures the program arguments for simpler access to individual parsed arguments
 type ParserOut struct {
-	Draws      *DrawInfo
+	Draws      *data.DrawInfo
 	OutputFile string
 }
 
@@ -41,11 +41,11 @@ func Parse(args []string) ParserOut {
 		return ParserOut{OutputFile: outputFile}
 	} else if lengthOfArguments == 1 {
 		text := args[0]
-		drawInfo := DrawInfo{Text: Escape(text), Style: Standard}
+		drawInfo := data.DrawInfo{Text: Escape(text), Style: Standard}
 		return ParserOut{Draws: &drawInfo, OutputFile: outputFile}
 	} else if lengthOfArguments == 2 {
 		text, style := args[0], args[1]
-		drawInfo := DrawInfo{Text: Escape(text), Style: style}
+		drawInfo := data.DrawInfo{Text: Escape(text), Style: style}
 		return ParserOut{Draws: &drawInfo, OutputFile: outputFile}
 	}
 
