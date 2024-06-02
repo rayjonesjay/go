@@ -13,7 +13,8 @@ func main() {
 		return
 	}
 
-	draws, outputFile := args.Parse(mArgs)
+	parse := args.Parse(mArgs)
+	draws, outputFile := parse.Draws, parse.OutputFile
 	if draws == nil {
 		// nothing to draw
 		help.PrintUsage()

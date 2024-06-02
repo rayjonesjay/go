@@ -13,8 +13,14 @@ const (
 	Thinkertoy = "thinkertoy"
 )
 
+// ParserOut structures the program arguments for simpler access to individual parsed arguments
+type ParserOut struct {
+	Draws      []DrawInfo
+	OutputFile string
+}
+
 // Parse takes the flag '--output=file.txt' together with text and style to be printed
-func Parse(args []string) ([]DrawInfo, string) {
+func Parse(args []string) ParserOut {
 	lengthOfArguments := len(args)
 	outputFile := ""
 
@@ -32,16 +38,17 @@ func Parse(args []string) ([]DrawInfo, string) {
 	}
 
 	if lengthOfArguments < 1 {
-		return nil, outputFile
+		//return nil, outputFile
+		return ParserOut{OutputFile: outputFile}
 	} else if lengthOfArguments == 1 {
 		text := args[0]
 		drawInfo := DrawInfo{Text: Escape(text), Style: Standard}
-		return []DrawInfo{drawInfo}, outputFile
+		return ParserOut{Draws: []DrawInfo{drawInfo}, OutputFile: outputFile}
 	} else if lengthOfArguments == 2 {
 		text, style := args[0], args[1]
 		drawInfo := DrawInfo{Text: Escape(text), Style: style}
-		return []DrawInfo{drawInfo}, outputFile
+		return ParserOut{Draws: []DrawInfo{drawInfo}, OutputFile: outputFile}
 	}
 
-	return nil, outputFile
+	return ParserOut{OutputFile: outputFile}
 }
