@@ -1,6 +1,7 @@
 package output
 
 import (
+	"ascii/fmtx"
 	"fmt"
 	"os"
 	"strings"
@@ -41,16 +42,16 @@ func Draw(all []DrawInfo, outputFile string) {
 
 	if outputFile != "" {
 		fd, openError := os.OpenFile(outputFile, os.O_CREATE|os.O_RDWR|os.O_TRUNC, 0o666)
-		if openError != nil {
-			fmt.Fprintf(os.Stderr, "error opening file\n")
-			os.Exit(1)
+		if openError != nil || fd == nil {
+			fmtx.FatalErrorf("error opening file\n")
+			return
 		}
 
 		_, writeError := fd.WriteString(out)
 		if writeError != nil {
-			fmt.Fprintf(os.Stderr, "error writing to file\n")
-			os.Exit(1)
+			fmtx.FatalErrorf("error writing to file\n")
 		}
+
 		return
 	}
 
