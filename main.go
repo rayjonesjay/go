@@ -18,6 +18,7 @@ func main() {
 	if draws == nil {
 		// nothing to draw
 		help.PrintUsage()
+		return
 	}
-	output.Draw(draws, outputFile)
+	output.Draw(*draws, outputFile)
 }
