@@ -101,7 +101,7 @@ func Drawln(caret []string, s string, m map[rune][]string) []string {
 
 // SPrintCaret given a caret, draws the graphics for the caret to a string and returns the string
 func SPrintCaret(caret []string) string {
-	if caret == nil || CaretEmpty(caret) {
+	if CaretEmpty(caret) {
 		return ""
 	}
 
@@ -114,12 +114,14 @@ func SPrintCaret(caret []string) string {
 			b.WriteRune('\n')
 		}
 	}
-
 	return b.String()
 }
 
 // CaretEmpty returns true if the caret is empty, i.e., entirely composed of empty strings
 func CaretEmpty(caret []string) bool {
+	if caret == nil {
+		return false
+	}
 	for _, line := range caret {
 		if line != "" {
 			return false

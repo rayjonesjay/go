@@ -6,30 +6,9 @@ import (
 )
 
 // Escape given a command line argument, or rather any such string, performs interpretation of the
-// following backslash escapes:
-//
-//	\\     backslash
-//
-//	\a     alert (BEL)
-//
-//	\b     backspace
-//
-//	\f     form feed
-//
-//	\n     new line
-//
-//	\r     carriage return
-//
-//	\t     horizontal tab
-//
-//	\v     vertical tab
-//
-//	\0NNN  byte with octal value NNN (1 to 3 digits)
-//
-// '\0'    null character
-//
-//	\xHH   byte with hexadecimal value HH (1 to 2 digits)
-//
+// following backslash escapes: \\, \a, \b, \f, \n, \r, \t, \v, \0, \0NNN (where NNN is
+// an octal value for the target ASCII character), and \xHH (where NNN is a
+// hexadecimal value for the target ASCII character)
 // Note:
 // Where it makes sense, the \0NNN octal escape takes precedence over the \0 null character
 // Any octal or hexadecimal values of ASCII characters that cannot be printed will be ignored
@@ -37,21 +16,15 @@ func Escape(arg string) string {
 	ss := []rune(arg)
 	l := len(ss)
 
-	//  '\a' (bell)
-	//  '\b' (backspace)
-	//  '\t' (horizontal tab)
-	//  '\n' (new line)
-	//  '\v' (vertical tab)
-	//  '\f' (form feed)
-	//  '\r' (carriage ret)
-	repMap := map[rune]rune{'\\': '\\',
-		'a': '\a',
-		'b': '\b',
-		't': '\t',
-		'n': '\n',
-		'v': '\v',
-		'f': '\f',
-		'r': '\r',
+	repMap := map[rune]rune{
+		'\\': '\\',
+		'a':  '\a',
+		'b':  '\b',
+		't':  '\t',
+		'n':  '\n',
+		'v':  '\v',
+		'f':  '\f',
+		'r':  '\r',
 	}
 
 	for i := 0; i < l; i++ {
@@ -110,19 +83,22 @@ func replaceEscape(i int, ss []rune, escape rune, n int, f func(string) (decimal
 }
 
 // HexStringToDecimal given a string representing a hexadecimal number, returns the decimal
-// representation of the input hexadecimal
+// representation of the input hexadecimal, and whether the interpretation was successful
+// //(which is the case that the decimal value is in the range [0,127]
 func HexStringToDecimal(hex string) (decimal int, ok bool) {
 	return BaseStringToDecimal(16, hex)
 }
 
 // OctalStringToDecimal given a string representing an octal number, returns the decimal
-// representation of the input octal number
+// representation of the input octal number, and whether the interpretation was successful
+// (which is the case that the decimal value is in the range [0,127]
 func OctalStringToDecimal(oct string) (decimal int, ok bool) {
 	return BaseStringToDecimal(8, oct)
 }
 
 // BaseStringToDecimal given a string representing a number to a given base, returns the decimal
-// representation of the input number
+// representation of the input number, and whether the interpretation was successful
+// //(which is the case that the decimal value is in the range [0,127]
 func BaseStringToDecimal(base int, s string) (decimal int, ok bool) {
 	conv, err := strconv.ParseInt(s, base, 32)
 	if err == nil {
