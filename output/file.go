@@ -12,33 +12,27 @@ import (
 	"ascii/special"
 )
 
-// Draw given a series of [DrawInfo] items, extract the drawing information and generate the expected graphics
-func Draw(all []DrawInfo, outputFile string) {
-	// The text received from the commandline may include special ASCII escape characters as \t, \a, \r, \v, \b, and \f
-	// we handle such characters using the utilities from the `special` chars package
+// Draw given a [DrawInfo] item, extract the drawing information and generate the expected graphics
+// The text received from the commandline may include special ASCII escape characters as \t, \a, \r, \v, \b, and \f
+// we handle such characters using the utilities from the `special` chars package
+func Draw(draws DrawInfo, outputFile string) {
 	hasBell := false
-	for i := 0; i < len(all); i++ {
-		drawInfo := all[i]
-		if drawInfo.Text == "" {
-			continue
-		}
+	if draws.Text != "" {
 		// Handle the special characters \t, \b, \r, \f, \v
-		drawInfo.Text = strings.ReplaceAll(drawInfo.Text, "\t", "  ")
-		drawInfo.Text = applyPerLine(drawInfo.Text, special.SlashB, "\b", "\\b")
-		drawInfo.Text = applyPerLine(drawInfo.Text, special.SlashR, "\r", "\\r")
-		drawInfo.Text = applyPerLine(drawInfo.Text, special.SlashV, "\v", "\\v")
-		drawInfo.Text = applyPerLine(drawInfo.Text, special.SlashF, "\f", "\\f")
+		draws.Text = strings.ReplaceAll(draws.Text, "\t", "  ")
+		draws.Text = applyPerLine(draws.Text, special.SlashB, "\b", "\\b")
+		draws.Text = applyPerLine(draws.Text, special.SlashR, "\r", "\\r")
+		draws.Text = applyPerLine(draws.Text, special.SlashV, "\v", "\\v")
+		draws.Text = applyPerLine(draws.Text, special.SlashF, "\f", "\\f")
 
 		// Handle \a
-		if strings.ContainsRune(drawInfo.Text, '\a') {
+		if strings.ContainsRune(draws.Text, '\a') {
 			hasBell = true
-			drawInfo.Text = strings.ReplaceAll(drawInfo.Text, "\a", "")
+			draws.Text = strings.ReplaceAll(draws.Text, "\a", "")
 		}
-
-		all[i] = drawInfo
 	}
 
-	out := graphics.Draw(all)
+	out := graphics.Draw(draws)
 
 	if outputFile != "" {
 		fd, openError := os.OpenFile(outputFile, os.O_CREATE|os.O_RDWR|os.O_TRUNC, 0o666)

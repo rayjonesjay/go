@@ -15,7 +15,7 @@ const (
 
 // ParserOut structures the program arguments for simpler access to individual parsed arguments
 type ParserOut struct {
-	Draws      []DrawInfo
+	Draws      *DrawInfo
 	OutputFile string
 }
 
@@ -38,16 +38,15 @@ func Parse(args []string) ParserOut {
 	}
 
 	if lengthOfArguments < 1 {
-		//return nil, outputFile
 		return ParserOut{OutputFile: outputFile}
 	} else if lengthOfArguments == 1 {
 		text := args[0]
 		drawInfo := DrawInfo{Text: Escape(text), Style: Standard}
-		return ParserOut{Draws: []DrawInfo{drawInfo}, OutputFile: outputFile}
+		return ParserOut{Draws: &drawInfo, OutputFile: outputFile}
 	} else if lengthOfArguments == 2 {
 		text, style := args[0], args[1]
 		drawInfo := DrawInfo{Text: Escape(text), Style: style}
-		return ParserOut{Draws: []DrawInfo{drawInfo}, OutputFile: outputFile}
+		return ParserOut{Draws: &drawInfo, OutputFile: outputFile}
 	}
 
 	return ParserOut{OutputFile: outputFile}
