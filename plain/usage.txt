@@ -1,17 +1,21 @@
-Usage:
-    ascii TEXT
-    ascii TEXT STYLE
+Usage: go run . [OPTION] [STRING] [BANNER]
+
+EX: go run . --output=<fileName.txt> something standard
 
 Display ASCII graphics
 
-TEXT:
+STRING:
     Text whose graphics is to be displayed
 
-STYLE:
+OPTION:
+       --output=file.txt specifies where to save the output
+
+BANNER:
     The banner style to use to draw the given text
     Supported banner styles: shadow
                              standard
                              thinkertoy
+
 
 Description:
        The following backslash escape sequences are recognized:
@@ -45,6 +49,8 @@ Description:
 Examples:
        go run main.go "Hello"
        go run main.go "Hi!" shadow
+
+       go run . --output=<fileName.txt> something standard
 
 AUTHOR
        Written by Nicholas Ajwang, Ray Muiruri, and David Ochiel.
