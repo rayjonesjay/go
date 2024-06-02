@@ -56,20 +56,21 @@ Assuming the current working directory, is set to the repository's root:
                     
    ascii-art$
    ```
-
-4. Mixing words with the different banner files:
    
+4. Write the ASCII graphics of the text `Hello` with the `shadow` banner to the output file `output.txt`:
+
    ```shell
-   ascii-art$ go run . "Now " standard "See " shadow "This" thinkertoy 
-    _   _                                                                             
-   | \ | |                            _|_|_|                         o-O-o o          
-   |  \| |   ___   __      __       _|         _|_|     _|_|           |   |    o     
-   | . ` |  / _ \  \ \ /\ / /         _|_|   _|_|_|_| _|_|_|_|         |   O--o   o-o 
-   | |\  | | (_) |  \ V  V /              _| _|       _|               |   |  | |  \  
-   |_| \_|  \___/    \_/\_/         _|_|_|     _|_|_|   _|_|_|         o   o  o | o-o 
-                                                                                      
-                                                                                      
-   ascii-art$ 
+   ascii-art-output$ go run . --output=output.txt "Hello" shadow
+   ascii-art-output$ cat output.txt
+   
+   _|    _|          _| _|          
+   _|    _|   _|_|   _| _|   _|_|   
+   _|_|_|_| _|_|_|_| _| _| _|    _|
+   _|    _| _|       _| _| _|    _|
+   _|    _|   _|_|_| _| _|   _|_|
+   
+   
+   ascii-art-output$ ls
    ```
 
 ## Implementation details: algorithm
@@ -89,7 +90,6 @@ Assuming the current working directory, is set to the repository's root:
 
     - `go run . "Hello"`: The first argument is the text whose graphics is to be displayed.
     - `go run . "Hello" standard`: The first argument is the text whose graphics is to be displayed, while the second argument selects any of the given graphics files to use (must be one of `shadow`, `standard`, and `thinkertoy`).
-    - `go run . "Hello" standard "World" shadow "This is working" thinkertoy`: The first argument is the text whose graphics is to be displayed, while the second argument selects any of the given graphics files to use (must be one of `shadow`, `standard`, and `thinkertoy`). Consequently, the third argument is the text whose graphics is to be displayed, while the fourth argument selects any of the given graphics files to use (must be one of `shadow`, `standard`, and `thinkertoy`). Consequently, the fifth argument is the text whose graphics is to be displayed, while the sixth argument selects any of the given graphics files to use (must be one of `shadow`, `standard`, and `thinkertoy`). We follow this format for an infinite number of such formatted command-line arguments.
 
 3. Once done parsing the commandline args, the `main.go` file should also split the input string (the string to be displayed) into lines, then feed each line separately to a line graphics drawing function, `drawln`, that takes the line of string to be drawn, alongside the banner format, either of (`shadow`, `standard`, and `thinkertoy`). This should be done in a separate `draw` function, defined in the `main.go` file.
 
