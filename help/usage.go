@@ -14,5 +14,5 @@ func PrintUsage() {
 		os.Exit(1)
 	}
 	fmt.Print(string(usage))
-	os.Exit(1)
+	os.Exit(0)
 }
