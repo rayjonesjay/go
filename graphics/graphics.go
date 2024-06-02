@@ -1,10 +1,10 @@
 package graphics
 
 import (
-	"ascii/args"
 	"fmt"
 	"os"
 	"strings"
+	"ascii/args"
 )
 
 // GMap represents a (character -> graphics) map

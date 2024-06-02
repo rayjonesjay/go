@@ -1,6 +1,7 @@
 package graphics
 
 import (
+	"ascii/colors"
 	"bufio"
 	"fmt"
 	"log"
@@ -11,7 +12,6 @@ import (
 )
 
 var (
-
 	// FAIL To be called if a program was run in the wrong way
 	FAIL = func() { os.Exit(1) }
 
@@ -49,12 +49,12 @@ func checkFileExist(fileName string) string {
 			download(fileName)
 		} else if strings.ToLower(choice) == "no" || strings.ToLower(choice) == "n" {
 
-			fmt.Printf("Cannot continue with the program without: %s\n", strings.ReplaceAll(fileName, "banners/", ""))
+			fmt.Printf("cannot continue with the program without: %s\n", strings.ReplaceAll(fileName, "banners/", ""))
 			FAIL()
 
 		} else {
 
-			fmt.Println("WRONG user input! Exiting...")
+			fmt.Println("wrong user input! exiting...")
 			FAIL()
 		}
 
@@ -78,7 +78,7 @@ func checkFileExist(fileName string) string {
 			download(fileName)
 		} else if strings.ToLower(userChoice) == "no" || strings.ToLower(userChoice) == "n" {
 
-			fmt.Printf("Cannot continue with the program without: %s\n", strings.ReplaceAll(fileName, "banners/", ""))
+			fmt.Printf("cannot continue with the program without: %s\n", strings.ReplaceAll(fileName, "banners/", ""))
 			FAIL()
 
 		} else if strings.ToLower(userChoice) == "all" || strings.ToLower(userChoice) == "a" {
@@ -87,7 +87,7 @@ func checkFileExist(fileName string) string {
 			PASS()
 		} else {
 
-			fmt.Printf("Wrong Input: You entered -> %s Expected -> yes(y) or no(n).\n", userChoice)
+			fmt.Printf("wrong input: you entered -> %s expected -> yes(y) or no(n).\n", userChoice)
 			FAIL()
 		}
 	}
@@ -122,7 +122,7 @@ func download(fileName string) {
 	_, err := downloadCommand.CombinedOutput()
 
 	if err != nil {
-		log.Fatalf("\n\tDownload attempt failed! Check your internet connection and try again.\n")
+		log.Fatalf("\n\tdownload attempt failed! check your internet connection and try again.\n")
 	} else {
 
 		move := exec.Command("mv", file, "banners/")
@@ -133,7 +133,7 @@ func download(fileName string) {
 			fmt.Println(output)
 		}
 		fmt.Println()
-		fmt.Printf("%s downloaded successfully.. rerun the program\n", strings.Replace(fileName, "banners/", "", -1))
+		fmt.Printf("%s%q downloaded successfully.. rerun the program\n%s", colors.GREEN, strings.Replace(fileName, "banners/", "", -1), colors.RESET)
 		PASS()
 	}
 }
@@ -177,7 +177,7 @@ func downloadALL() {
 	for _, file := range bannerFiles {
 		moveFileToBannerDir(file)
 	}
-	fmt.Printf("All banner Files downloaded Successfully... rerun the program\n")
+	fmt.Printf("%sall banner files downloaded successfully... rerun the program\n%s", colors.GREEN, colors.RESET)
 	PASS()
 }
 
