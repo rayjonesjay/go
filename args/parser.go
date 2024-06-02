@@ -1,7 +1,11 @@
 package args
 
-import "ascii/output"
-
+import (
+	"ascii/args/flags"
+	. "ascii/data"
+	"ascii/help"
+	"fmt"
+)
 
 const (
 	Shadow     = "shadow"
@@ -9,37 +13,41 @@ const (
 	Thinkertoy = "thinkertoy"
 )
 
-// DrawInfo holds the text to be drawn, and with which style it is to be drawn
-type DrawInfo struct {
-	Text  string
-	Style string
+// ParserOut structures the program arguments for simpler access to individual parsed arguments
+type ParserOut struct {
+	Draws      *DrawInfo
+	OutputFile string
 }
 
-// Takes the flag '--output=file.txt' together with text and style to be printed
-func Parse(args []string) ([]DrawInfo, string) {
-	length_of_arguments := len(args)
-
+// Parse takes the flag '--output=file.txt' together with text and style to be printed
+func Parse(args []string) ParserOut {
+	lengthOfArguments := len(args)
 	outputFile := ""
 
 	// check if flag was passed and is valid
-	if IsValidFlag(args) {
+	if flags.IsValidFlag(args) {
 		flagAndFile := args[0]
-		OutputFile, inspectError := InspectFlagAndFile(flagAndFile)
-		if inspectError == nil && OutputFile != "" {
-			outputFile = outputFile
+		var inspectError error
+		outputFile, inspectError = flags.InspectFlagAndFile(flagAndFile)
+		if inspectError != nil {
+			fmt.Printf("Usage Error: %s\n", inspectError.Error())
+			help.PrintUsage()
 		}
 		args = args[1:]
-		length_of_arguments = (length_of_arguments - 1)
+		lengthOfArguments = lengthOfArguments - 1
 	}
 
-	if length_of_arguments < 1 {
-		return nil, outputFile
-	} else if length_of_arguments == 1 {
-
+	if lengthOfArguments < 1 {
+		return ParserOut{OutputFile: outputFile}
+	} else if lengthOfArguments == 1 {
 		text := args[0]
-		return []DrawInfo{{Text: Escape(text), Style: Standard}}, outputFile
-
+		drawInfo := DrawInfo{Text: Escape(text), Style: Standard}
+		return ParserOut{Draws: &drawInfo, OutputFile: outputFile}
+	} else if lengthOfArguments == 2 {
+		text, style := args[0], args[1]
+		drawInfo := DrawInfo{Text: Escape(text), Style: style}
+		return ParserOut{Draws: &drawInfo, OutputFile: outputFile}
 	}
 
-	return []DrawInfo{}, outputFile
+	return ParserOut{OutputFile: outputFile}
 }

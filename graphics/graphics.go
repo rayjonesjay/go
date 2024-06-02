@@ -1,10 +1,10 @@
 package graphics
 
 import (
+	. "ascii/data"
 	"fmt"
 	"os"
 	"strings"
-	"ascii/args"
 )
 
 // GMap represents a (character -> graphics) map
@@ -18,62 +18,42 @@ var styleCache = make(StyleMap)
 
 // Draw takes a list of ASCII text to be displayed with their respective banner style, maps all the text to their
 // respective banner graphics style, and returns a string that draws the graphics
-func Draw(all []args.DrawInfo) string {
-	// Check if the given slice of text to be drawn are all empty strings,
-	//in which case there really is nothing to be drawn
-	allEmpty := true
-	for _, d := range all {
-		if d.Text != "" {
-			// Found one non-empty text to be displayed
-			allEmpty = false
-			// beak early, continuing the loop won't make any difference
-			break
-		}
-	}
-
-	if allEmpty {
-		// Nothing to draw, thus, nothing to print
-		return ""
-	}
-
-	// We have a series of graphics to draw
+func Draw(draw DrawInfo) string {
 	var b strings.Builder
 	var caret []string
-	// Draw each text in order with its respective style
-	for _, info := range all {
-		if info.Text == "" {
-			// empty text, nothing to draw
-			continue
-		} else if AllNewlines(info.Text) {
-			// The current text to print is a special case of all (\n) newline characters
-			// We don't need to print these on the caret, just print the newlines directly
-			b.WriteString(strings.Repeat("\n", len(info.Text)-1))
-			continue
-		}
-		// The current text may be on different lines, if so, we may need to advance the caret to a new line
-		lines := strings.Split(info.Text, "\n")
-		for i, l := range lines {
-			if i == 0 {
-				// first line is to be drawn, contrary to the `else` statement below,
-				//we must not yet advance the caret to a newline, we may have more text on this same line
-				caret = Drawln(caret, l, GetMap(info.Style))
-			} else {
-				// Write the previous line, we are yet to write another line
-				output := SPrintCaret(caret)
-				b.WriteString(output)
-				// advance the caret to a newline, we are done with text on the current line,
-				//as we prepare to write the next line
-				b.WriteRune('\n')
-				// Prepare to write a new line, but we must not yet advance the caret to a newline,
-				//we may have more text on this same line
-				caret = nil
-				caret = Drawln(caret, l, GetMap(info.Style))
-			}
+
+	// Finalizes the [Draw] function by formatting the caret output
+	finalize := func() string {
+		b.WriteString(SPrintCaret(caret))
+		b.WriteRune('\n')
+		return b.String()
+	}
+
+	if draw.Text == "" {
+		// empty text, no graphics to draw
+		return ""
+	} else if AllNewlines(draw.Text) {
+		b.WriteString(strings.Repeat("\n", len(draw.Text)-1))
+		return finalize()
+	}
+
+	// The current text may be on different lines, if so, we may need to advance the caret to a new line
+	lines := strings.Split(draw.Text, "\n")
+	for i, l := range lines {
+		if i == 0 {
+			caret = Drawln(caret, l, GetMap(draw.Style))
+		} else {
+			// Write the previous line, we are yet to write another line
+			output := SPrintCaret(caret)
+			b.WriteString(output)
+			// Prepare to write the next line
+			b.WriteRune('\n')
+			caret = nil
+			caret = Drawln(caret, l, GetMap(draw.Style))
 		}
 	}
-	b.WriteString(SPrintCaret(caret))
-	b.WriteRune('\n')
-	return b.String()
+
+	return finalize()
 }
 
 // Drawln is a helper function used by the [Draw] function to draw some line of text from the current caret position.
@@ -93,16 +73,13 @@ func Drawln(caret []string, s string, m map[rune][]string) []string {
 
 	// Map each ASCII character to its graphics, and append to the current caret position
 	for _, char := range s {
-		// Get the graphics of the current character
 		g, ok := m[char]
 		if !ok {
-			// The current character does not exist in the (character -> graphics) map, its most likely
-			//a non-ascii character or a non-printable ASCII character
 			if char < 32 || char == 127 {
-				//fmt.Printf("Encountered Non-printable ASCII character: \"%c\"\n", char)
 				// Ignore special ASCII characters including the delete character
 				continue
 			} else {
+				// The current character does not exist in the (character -> graphics) map
 				fmt.Printf("Invalid ASCII character: \"%c\"\n", char)
 				os.Exit(1)
 			}
@@ -113,7 +90,7 @@ func Drawln(caret []string, s string, m map[rune][]string) []string {
 			os.Exit(1)
 		}
 
-		// append the current character's graphics to its respective line in the caret
+		// Append the current character's graphics to its respective line in the caret
 		for i, line := range g {
 			caret[i] = caret[i] + line
 		}
@@ -124,22 +101,16 @@ func Drawln(caret []string, s string, m map[rune][]string) []string {
 
 // SPrintCaret given a caret, draws the graphics for the caret to a string and returns the string
 func SPrintCaret(caret []string) string {
-	if caret == nil {
-		// Caret null, nothing to print
-		return ""
-	} else if CaretEmpty(caret) {
-		// Caret empty, we'll print an empty string
+	if caret == nil || CaretEmpty(caret) {
 		return ""
 	}
 
-	var b strings.Builder
-
 	// Print each caret line
+	var b strings.Builder
 	for i, line := range caret {
 		b.WriteString(line)
 		if i != len(caret)-1 {
-			// Don't move the caret to a newline,
-			//we might have some characters to print at the current caret line
+			// Don't move the caret to a newline, on the last caret line
 			b.WriteRune('\n')
 		}
 	}
@@ -157,27 +128,22 @@ func CaretEmpty(caret []string) bool {
 	return true
 }
 
-// AllNewlines returns true if all the string s is composed entirely of newline characters
+// AllNewlines returns true if the given string is composed entirely of newline characters
 func AllNewlines(s string) bool {
-
-	//check if all characters in a given string are newLine characters
 	for _, char := range s {
 		if char != '\n' {
 			return false
 		}
 	}
-	// s is composed entirely of newline characters
 	return true
 }
 
 // GetMap when given a given banner style, if not cached already, creates a map from the respective banner file,
 // with the defined characters matched to their graphics for drawing. Returns the created map, or the cached map
 func GetMap(style string) map[rune][]string {
-	// attempt to retrieve the (character -> graphics) map for the given style from the cache
 	m, ok := styleCache[style]
 	if !ok {
 		// This style graphics map isn't cached, create it
-		// The banner files are in the banners subdirectory
 		m = ReadBanner("banners/" + style + ".txt")
 		styleCache[style] = m
 	}

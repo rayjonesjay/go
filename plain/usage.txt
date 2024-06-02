@@ -1,7 +1,6 @@
 Usage:
     ascii TEXT
     ascii TEXT STYLE
-    ascii (TEXT STYLE)...TEXT [STYLE]
 
 Display ASCII graphics
 
@@ -44,10 +43,8 @@ Description:
           Any octal or hexadecimal values of ASCII characters that cannot be printed will be ignored.
 
 Examples:
-       go run main.go "TEXT"
-       go run main.go "TEXT" standard
-       go run main.go "TEXT1" shadow "TEXT2" thinkertoy
-       go run main.go "TEXT1" standard "TEXT2" shadow "TEXT3" thinkertoy
+       go run main.go "Hello"
+       go run main.go "Hi!" shadow
 
 AUTHOR
        Written by Nicholas Ajwang, Ray Muiruri, and David Ochiel.
