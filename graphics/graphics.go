@@ -1,7 +1,7 @@
 package graphics
 
 import (
-	. "ascii/data"
+	"ascii/data"
 	"fmt"
 	"os"
 	"strings"
@@ -18,7 +18,7 @@ var styleCache = make(StyleMap)
 
 // Draw takes a list of ASCII text to be displayed with their respective banner style, maps all the text to their
 // respective banner graphics style, and returns a string that draws the graphics
-func Draw(draw DrawInfo) string {
+func Draw(draw data.DrawInfo) string {
 	var b strings.Builder
 	var caret []string
 

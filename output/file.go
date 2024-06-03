@@ -6,7 +6,7 @@ import (
 	"os"
 	"strings"
 
-	. "ascii/data"
+	"ascii/data"
 	"ascii/graphics"
 	"ascii/sound"
 	"ascii/special"
@@ -15,7 +15,7 @@ import (
 // Draw given a [DrawInfo] item, extract the drawing information and generate the expected graphics
 // The text received from the commandline may include special ASCII escape characters as \t, \a, \r, \v, \b, and \f
 // we handle such characters using the utilities from the `special` chars package
-func Draw(draws DrawInfo, outputFile string) {
+func Draw(draws data.DrawInfo, outputFile string) {
 	hasBell := false
 	if draws.Text != "" {
 		// Handle the special characters \t, \b, \r, \f, \v

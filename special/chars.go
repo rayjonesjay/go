@@ -78,32 +78,22 @@ func SlashV(s string) string {
 
 // slashFSlashV is a super function to handle either of the escape sequences \f and \v
 func slashFSlashV(s string, escape rune) string {
-	// Split by the given escape sequence
 	sp := strings.Split(s, `\`+string(escape))
-	// We need a deep copy of sp
-	sp2 := make([]string, len(sp))
-	copy(sp2, sp)
+	indents := make([]int, len(sp))
 
-	// Loop over each split
 	for i, s := range sp {
-		// Skip the first split, \r takes effect on the characters after its position in the string
-		if i != 0 {
-			// b will be modifying the contents of sp, while b2 will be modifying the contents of sp2
-			var b, b2 strings.Builder
+		if i == 0 {
+			indents[i] = len(s)
+		} else {
+			var b strings.Builder
 			if s != "" {
-				// The current split is an empty string, this is the case when we split when the split target
-				//is at the end of the string, or they are chained together, one after the other
-				// In which case we indent according to the size of the previous non-empty string
-				b.WriteString(strings.Repeat(" ", len(sp2[i-1])))
+				// Don't write indent spaces if the current split is an empty string
+				b.WriteString(strings.Repeat(" ", indents[i-1]))
 			}
-			// b2 keeps track of the spaces after the previous line, regardless of whether the split is an empty string
-			b2.WriteString(strings.Repeat(" ", len(sp2[i-1])))
 
-			// Update the current split
 			b.WriteString(s)
-			b2.WriteString(s)
 			sp[i] = b.String()
-			sp2[i] = b2.String()
+			indents[i] = indents[i-1] + len(s)
 		}
 	}
 

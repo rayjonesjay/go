@@ -1,6 +1,5 @@
-Usage: go run . [OPTION] [STRING] [BANNER]
-
-EX: go run . --output=<fileName.txt> something standard
+Usage:
+    go run . [OPTION] [STRING] [BANNER]
 
 Display ASCII graphics
 
@@ -8,14 +7,14 @@ STRING:
     Text whose graphics is to be displayed
 
 OPTION:
-       --output=file.txt specifies where to save the output
+    --output=file
+            write the ASCII graphics to the given file instead of printing to console output
 
 BANNER:
     The banner style to use to draw the given text
     Supported banner styles: shadow
                              standard
                              thinkertoy
-
 
 Description:
        The following backslash escape sequences are recognized:
@@ -36,11 +35,11 @@ Description:
 
        \v     vertical tab
 
-       \0NNN  byte with octal value NNN (1 to 3 digits)
+       \0NNN  byte with octal value NNN (3 digits)
 
        \0    null character
 
-       \xHH   byte with hexadecimal value HH (1 to 2 digits)
+       \xHH   byte with hexadecimal value HH (2 digits)
 
        Note:
           Where it makes sense, the \0NNN octal escape takes precedence over the \0 null character.
@@ -50,7 +49,7 @@ Examples:
        go run main.go "Hello"
        go run main.go "Hi!" shadow
 
-       go run . --output=<fileName.txt> something standard
+       go run . --output=output.txt something standard
 
 AUTHOR
        Written by Nicholas Ajwang, Ray Muiruri, and David Ochiel.
