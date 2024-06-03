@@ -1,125 +1,140 @@
 package special
 
-import "testing"
+import (
+	"strings"
+	"testing"
+)
 
-func TestSlashB(t *testing.T) {
-	output := SlashB("hello\\bthere\\bworld\\b")
-	expected := "helltherworld"
-	if output != expected {
-		t.Errorf("Expected %v got %v", expected, output)
+func TestEscapeFEscapeV(t *testing.T) {
+	tests := []struct {
+		name     string
+		input    string
+		expected string
+	}{
+		{
+			"Mixed escape positions",
+			"hello\fworld\fthere\fthere",
+			"hello\n     world\n          there\n               there",
+		},
+		{"Escape in the middle", "hello\fworld", "hello\n     world"},
+		{"Mixed escape positions with trailing", "hello\fworld\fhey\f", "hello\n     world\n          hey\n"},
+		{"No target escape", "hello", "hello"},
+		{"Double escapes at the end", "\fhello\f\f", "\nhello\n\n"},
+		{"Triple escapes in the middle", "hello\f\f\fthere", "hello\n\n\n     there"},
+		{"No target escape", "\n", "\n"},
+		{"Empty string", "", ""},
+		{"No target escape", `hello\\nWorld`, `hello\\nWorld`},
+		{"Single indent", "g\fhello", "g\n hello"},
+		{"Single character trailing escape", "hello\fg", "hello\n     g"},
+		{
+			"Multiple Repeated Interspersed escape positions",
+			"\f\f\fHello\f\f\fThere\f\f\fThis\f\f\fI\f\f\fSuppose\f\f\fIs\f\f\fToo\f\f\fComplex\f\f\f",
+			"\n\n\nHello\n\n\n     There\n\n\n          This\n\n\n              I\n\n\n               Suppose\n\n\n                      Is\n\n\n                        Too\n\n\n                           Complex\n\n\n",
+		},
 	}
 
-	output2 := SlashB("hello\\bthere\\bworld")
-	expected2 := "helltherworld"
-	if output2 != expected2 {
-		t.Errorf("Expected %v got %v", expected2, output2)
-	}
-
-	output3 := SlashB("hello\\bthere \\bworld")
-	expected3 := "hellthereworld"
-	if output3 != expected3 {
-		t.Errorf("Expected %v got %v", expected3, output3)
-	}
-
-	output4 := SlashB("hello")
-	expected4 := "hello"
-	if output4 != expected4 {
-		t.Errorf("Expected %v got %v", expected4, output4)
-	}
-}
-
-func TestSlashR(t *testing.T) {
-	output := SlashR("hello\\rworld")
-	expected := "world"
-	if output != expected {
-		t.Errorf("Expected %v got %v", expected, output)
-	}
-
-	output2 := SlashR("hello\\rworldew\\rworldewno\\rhey")
-	expected2 := "heyldewno"
-	if output2 != expected2 {
-		t.Errorf("Expected %v got %v", expected2, output2)
-	}
-
-	output3 := SlashR("hello\\rworldew\\rhey\\r")
-	expected3 := "heyldew"
-	if output3 != expected3 {
-		t.Errorf("Expected %v got %v", expected3, output3)
-	}
-
-	output4 := SlashR("hello")
-	expected4 := "hello"
-	if output4 != expected4 {
-		t.Errorf("Expected %v got %v", expected4, output4)
+	for _, tt := range tests {
+		t.Run(
+			tt.name, func(t *testing.T) {
+				if got := EscapeF(tt.input); got != tt.expected {
+					t.Errorf("got %q, want %q", got, tt.expected)
+				}
+				tt.input = strings.ReplaceAll(tt.input, "\f", "\v")
+				if got := EscapeV(tt.input); got != tt.expected {
+					t.Errorf("got %q, want %q", got, tt.expected)
+				}
+			},
+		)
 	}
 }
 
-func TestSlashFSlashV(t *testing.T) {
-	output := SlashF("hello\\fworld\\fthere\\fthere")
-	expected := "hello\n     world\n          there\n               there"
-	if output != expected {
-		t.Errorf("Expected %v got %v", expected, output)
+func TestEscapeR(t *testing.T) {
+	tests := []struct {
+		name     string
+		input    string
+		expected string
+	}{
+		{"Empty string", "", ""},
+		{"No target escape", "Hello", "Hello"},
+
+		{"Escape at the end", "Hello\r", "Hello"},
+		{"Double escapes at the end", "Hello\r\r", "Hello"},
+		{"Triple escapes at the end", "Hello\r\r\r", "Hello"},
+
+		{"Escape in the middle", "Hello\rWorld", "World"},
+		{"Double escapes in the middle", "Hello\r\rWorld", "World"},
+		{"Triple escapes in the middle", "Hello\r\r\rWorld", "World"},
+
+		{"Escape at the start", "\rHello", "Hello"},
+		{"Two escapes at the start", "\r\rHello", "Hello"},
+		{"Triple escapes at the start", "\r\r\rHello", "Hello"},
+
+		{"Mixed escape positions", "\rHello\rWorld\r", "World"},
+		{"Double Repeated Interspersed escape positions", "\r\rHello\r\rWorld\r\r", "World"},
+		{"Triple Repeated Interspersed escape positions", "\r\r\rHello\r\r\rWorld\r\r\r", "World"},
+
+		{"Mixed escape character literal", "r\rrHellor\rrWorldr\rr", "rWorldr"},
+		{"Mixed escape character literal escaped", "\\r\r\\rHello\\r\r\\rWorld\\r\r\\r", `\rWorld\r`},
+		{
+			"Multiple Repeated Interspersed escape positions",
+			"\r\r\rHello\r\r\rThere\r\r\rThis\r\r\rI\r\r\rSuppose\r\r\rIs\r\r\rToo\r\r\rComplex\r\r\r",
+			"Complex",
+		},
 	}
 
-	output2 := SlashF("hello\\fworld")
-	expected2 := "hello\n     world"
-	if output2 != expected2 {
-		t.Errorf("Expected %v got %v", expected2, output2)
+	for _, tt := range tests {
+		t.Run(
+			tt.name, func(t *testing.T) {
+				if got := EscapeR(tt.input); got != tt.expected {
+					t.Errorf("got %q, want %q", got, tt.expected)
+				}
+			},
+		)
+	}
+}
+
+func TestEscapeB(t *testing.T) {
+	tests := []struct {
+		name     string
+		input    string
+		expected string
+	}{
+		{"Empty string", "", ""},
+		{"No target escape", "Hello", "Hello"},
+
+		{"Escape at the end", "Hello\b", "Hello"},
+		{"Double escapes at the end", "Hello\b\b", "Hello"},
+		{"Triple escapes at the end", "Hello\b\b\b", "Hello"},
+
+		{"Escape in the middle", "Hello\bWorld", "HellWorld"},
+		{"Double escapes in the middle", "Hello\b\bWorld", "HelWorld"},
+		{"Triple escapes in the middle", "Hello\b\b\bWorld", "HeWorld"},
+
+		{"Escape at the start", "\bHello", "Hello"},
+		{"Two escapes at the start", "\b\bHello", "Hello"},
+		{"Triple escapes at the start", "\b\b\bHello", "Hello"},
+
+		{"Mixed escape positions", "\bHello\bWorld\b", "HellWorld"},
+		{"Double Repeated Interspersed escape positions", "\b\bHello\b\bWorld\b\b", "HelWorld"},
+		{"Triple Repeated Interspersed escape positions", "\b\b\bHello\b\b\bWorld\b\b\b", "HeWorld"},
+
+		{"Mixed escape character literal", "b\bbHellob\bbWorldb\bb", "bHellobWorldb"},
+		{"Mixed escape character literal escaped", "\\b\b\\bHello\\b\b\\bWorld\\b\b\\b", `\\bHello\\bWorld\\b`},
+
+		{
+			"Multiple Repeated Interspersed escape positions",
+			"\b\b\bHello\b\b\bThere\b\b\bThis\b\b\bI\b\b\bSuppose\b\b\bIs\b\b\bToo\b\b\bComplex\b\b\b",
+			"HeTSupComplex",
+		},
 	}
 
-	output3 := SlashF("hello\\fworld\\fhey\\f")
-	expected3 := "hello\n     world\n          hey\n"
-	if output3 != expected3 {
-		t.Errorf("Expected %v got %v", expected3, output3)
-	}
-	// fmt.Println(output3)
-
-	output4 := SlashV("hello")
-	expected4 := "hello"
-	if output4 != expected4 {
-		t.Errorf("Expected %v got %v", expected4, output4)
-	}
-
-	output5 := SlashV("\\vhello\\v\\v")
-	expected5 := "\nhello\n\n"
-	if output5 != expected5 {
-		t.Errorf("Expected %v got %v", expected5, output5)
-	}
-
-	output6 := SlashV("hello\\v\\v\\vthere")
-	expected6 := "hello\n\n\n     there"
-	if output6 != expected6 {
-		t.Errorf("Expected %v got %v", expected6, output6)
-	}
-	// fmt.Println(output6)
-
-	output7 := SlashV("\n")
-	expected7 := "\n"
-	if output7 != expected7 {
-		t.Errorf("Expected %v got %v", expected7, output7)
-	}
-
-	output8 := SlashV("")
-	expected8 := ""
-	if output8 != expected8 {
-		t.Errorf("Expected %v got %v", expected8, output8)
-	}
-
-	output9 := SlashF("g\\fhello")
-	expected9 := "g\n hello"
-	if output9 != expected9 {
-		t.Errorf("Expected %v got %v", expected9, output9)
-	}
-
-	output10 := SlashF("hello\\fg")
-	expected10 := "hello\n     g"
-	if output10 != expected10 {
-		t.Errorf("Expected %v got %v", expected10, output10)
-	}
-
-	output11 := SlashF(`hello\\nWorld`)
-	expected11 := `hello\\nWorld`
-	if output11 != expected11 {
-		t.Errorf("Expected %v got %v", expected11, output11)
+	for _, tt := range tests {
+		t.Run(
+			tt.name, func(t *testing.T) {
+				if got := EscapeB(tt.input); got != tt.expected {
+					t.Errorf("got %q, want %q", got, tt.expected)
+				}
+			},
+		)
 	}
 }
