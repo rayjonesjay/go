@@ -1,49 +1,43 @@
 package special
 
 import (
+	"ascii/args"
 	"strings"
 )
 
-// SlashB applies the escape sequence \b on the given string
-func SlashB(s string) string {
-	result := ""
+// EscapeB applies the escape sequence \b on the given string
+func EscapeB(s string) string {
+	out := make([]rune, len(s))
 
-	// change the string to an array of runes
-	runes := []rune(s)
-	for i := 0; i < len(runes); i++ {
-		// check if the current rune is not at the last index, and it's '\' and the next is 'b'
-		if i+1 < len(runes) && runes[i] == '\\' && runes[i+1] == 'b' && i+1 != len(runes)-1 {
-			// remove the last element concatenated in the string "result"
-			if len(result) > 0 {
-				result = result[:len(result)-1]
-			}
-			i++ // skip the '\' and 'b' character
+	pos := 0
+	for _, r := range s {
+		if r == '\b' {
+			// Move cursor back one position
+			pos = max(pos-1, 0)
 		} else {
-			result += string(runes[i])
+			// Write the current character at pos
+			if pos < len(out) && pos >= 0 {
+				out[pos] = r
+			}
+			pos++
 		}
 	}
 
-	// when \b is at the end of the string, ignore
-	for i, v := range result {
-		if v == '\\' && result[i+1] == 'b' {
-			result = result[:len(result)-2]
-		}
-	}
-	return result
+	return args.ToString(out)
 }
 
-// SlashR applies the escape sequence \r on the given string
-func SlashR(s string) string {
+// EscapeR applies the escape sequence \r on the given string
+func EscapeR(s string) string {
 	result := ""
-	arr := strings.Split(s, "\\r")
+	arr := strings.Split(s, "\r")
+
+	// if there is no \r character in the string then the arr will only have one string
+	// in that case just return the string
+	if len(arr) == 1 {
+		return arr[0]
+	}
 
 	for i := 0; i < len(arr); i++ {
-		// if there is no \r character in the string then the arr will only have one string
-		// in that case just return the string
-		if len(arr) == 1 {
-			return arr[0]
-		}
-
 		// check if the string after \r is longer than the string before
 		// if so, update the string before to be the string after \r
 		if i+1 < len(arr) && len(arr[i+1]) > len(arr[i]) {
@@ -66,19 +60,19 @@ func SlashR(s string) string {
 	return result
 }
 
-// SlashF applies the escape sequence \f on the given string
-func SlashF(s string) string {
-	return slashFSlashV(s, 'f')
+// EscapeF applies the escape sequence \f on the given string
+func EscapeF(s string) string {
+	return escapeVF(s, '\f')
 }
 
-// SlashV applies the escape sequence \v on the given string
-func SlashV(s string) string {
-	return slashFSlashV(s, 'v')
+// EscapeV applies the escape sequence \v on the given string
+func EscapeV(s string) string {
+	return escapeVF(s, '\v')
 }
 
-// slashFSlashV is a super function to handle either of the escape sequences \f and \v
-func slashFSlashV(s string, escape rune) string {
-	sp := strings.Split(s, `\`+string(escape))
+// escapeVF is a super function to handle either of the escape sequences \f and \v
+func escapeVF(s string, escape rune) string {
+	sp := strings.Split(s, string(escape))
 	indents := make([]int, len(sp))
 
 	for i, s := range sp {

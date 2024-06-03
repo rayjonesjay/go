@@ -18,12 +18,12 @@ import (
 func Draw(draws data.DrawInfo, outputFile string) {
 	hasBell := false
 	if draws.Text != "" {
-		// Handle the special characters \t, \b, \r, \f, \v
+		// Handle the special characters \t, \b, \r, \f, \v, respectively
 		draws.Text = strings.ReplaceAll(draws.Text, "\t", "  ")
-		draws.Text = applyPerLine(draws.Text, special.SlashB, "\b", "\\b")
-		draws.Text = applyPerLine(draws.Text, special.SlashR, "\r", "\\r")
-		draws.Text = applyPerLine(draws.Text, special.SlashV, "\v", "\\v")
-		draws.Text = applyPerLine(draws.Text, special.SlashF, "\f", "\\f")
+		draws.Text = callFuncPerLine(draws.Text, special.EscapeB)
+		draws.Text = callFuncPerLine(draws.Text, special.EscapeR)
+		draws.Text = callFuncPerLine(draws.Text, special.EscapeF)
+		draws.Text = callFuncPerLine(draws.Text, special.EscapeV)
 
 		// Handle \a
 		if strings.ContainsRune(draws.Text, '\a') {
@@ -56,15 +56,12 @@ func Draw(draws data.DrawInfo, outputFile string) {
 	}
 }
 
-// applyPerLine applies the function f separately to each line of the string s, and returns the results as a string
-func applyPerLine(s string, f func(string) string, real, escape string) string {
+// callFuncPerLine calls the function f separately to each line of the string s,
+// and returns the joined results as a string
+func callFuncPerLine(s string, f func(string) string) string {
 	lines := strings.Split(s, "\n")
 	for i, l := range lines {
-		sections := strings.Split(l, escape)
-		for j, sn := range sections {
-			sections[j] = f(strings.ReplaceAll(sn, real, escape))
-		}
-		lines[i] = strings.Join(sections, escape)
+		lines[i] = f(l)
 	}
 	return strings.Join(lines, "\n")
 }
