@@ -7,9 +7,8 @@ import (
 	"strings"
 )
 
-// checks if the flag passed is valid --output=file.txt
+// InspectFlagAndFile checks if the flag passed is valid --output=file.txt
 func InspectFlagAndFile(args []string) string {
-
 	if len(args) > 3 {
 		help.PrintUsage()
 	}
@@ -32,7 +31,6 @@ func InspectFlagAndFile(args []string) string {
 	matches := compiledFlagPattern.FindStringSubmatch(flagAndFile)
 
 	if matches == nil {
-
 		help.PrintUsage()
 	}
 
