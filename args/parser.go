@@ -3,8 +3,6 @@ package args
 import (
 	"ascii/args/flags"
 	"ascii/data"
-	"ascii/help"
-	"fmt"
 )
 
 const (
@@ -22,20 +20,10 @@ type ParserOut struct {
 // Parse takes the flag '--output=file.txt' together with text and style to be printed
 func Parse(args []string) ParserOut {
 	lengthOfArguments := len(args)
-	outputFile := ""
+	outputFile := flags.InspectFlagAndFile(args)
 
-	// check if flag was passed and is valid
-	if flags.IsValidFlag(args) {
-		flagAndFile := args[0]
-		var inspectError error
-		outputFile, inspectError = flags.InspectFlagAndFile(flagAndFile)
-		if inspectError != nil {
-			fmt.Printf("Usage Error: %s\n", inspectError.Error())
-			help.PrintUsage()
-		}
-		args = args[1:]
-		lengthOfArguments = lengthOfArguments - 1
-	}
+	args = args[1:]
+	lengthOfArguments = lengthOfArguments - 1
 
 	if lengthOfArguments < 1 {
 		return ParserOut{OutputFile: outputFile}

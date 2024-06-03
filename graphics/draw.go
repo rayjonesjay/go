@@ -1,7 +1,6 @@
 package graphics
 
 import (
-	"ascii/colors"
 	"bufio"
 	"fmt"
 	"log"
@@ -12,10 +11,8 @@ import (
 )
 
 var (
-	// FAIL To be called if a program was run in the wrong way
 	FAIL = func() { os.Exit(1) }
 
-	// PASS To be called if a program run successfully
 	PASS = func() { os.Exit(0) }
 )
 
@@ -24,9 +21,6 @@ const (
 	PathToUrlFile           = CurrentWorkingDirectory + "plain/urls.txt"
 	PathToBannerFiles       = CurrentWorkingDirectory + "banners/"
 )
-
-
-
 
 // checkFileExist checks if the specified banner file exists in the banner/ directory,
 // offers to download the banner file if it does not yet existCURRENT_WORKING_DIRECTORY
@@ -39,10 +33,9 @@ func checkFileExist(fileName string) string {
 		download(fileName)
 	}
 
-	//if the file does not exist download
+	// if the file does not exist download
 	if err != nil {
-		downloadALL()
-		PASS()
+		download(fileName)
 	}
 
 	return fileName
@@ -86,81 +79,6 @@ func download(fileName string) {
 			fmt.Fprintf(os.Stderr, "error: %T\n", err)
 			fmt.Println(output)
 		}
-		//fmt.Printf("%s%q downloaded successfully.. rerun the program\n%s", colors.GREEN, strings.Replace(fileName, "banners/", "", -1), colors.RESET)
-	}
-}
-
-// downloads all the banner files at once
-func downloadALL() {
-	urlFile := "plain/urls.txt"
-	fileInfo , err := os.Stat(urlFile)
-
-	if fileInfo.Size() != 287 {
-		fmt.Println("url file contains wrong links.")
-		PASS()
-	}
-
-	if os.IsNotExist(err) {
-		bannerFiles := []string{"standard.txt","shadow.txt","thinkertoy.txt"}
-		for _, file := range bannerFiles{
-			download(file)
-		}
-		fmt.Println("download success rerun the program")
-		PASS()
-	}
-
-
-	// first of all delete the banner files
-	bannerFiles := []string{"shadow.txt", "standard.txt", "thinkertoy.txt"}
-	path := os.ExpandEnv(PathToBannerFiles)
-
-
-	for _, file := range bannerFiles {
-		_, err := os.Stat(file)
-
-		if err != nil {
-			if !os.IsNotExist(err) {
-				{
-				} //do nothing
-			}
-		} else {
-
-			rm := exec.Command("rm", path+file)
-			out, err := rm.CombinedOutput()
-
-			if err != nil {
-				log.Fatalf("Error Deleting %s %v\n", out, err)
-			}
-
-		}
-	}
-
-	downloadAll := exec.Command("wget", "-i", os.ExpandEnv(PathToUrlFile))
-	_, wgetErr := downloadAll.CombinedOutput()
-
-	if wgetErr != nil {
-		// check error occurred when moving file to banners/
-		_, file := filepath.Split(urlFile)
-		fmt.Fprintf(os.Stderr, "wget error with link in %q check the file %v\n",file, wgetErr)
-	}
-
-
-	for _, file := range bannerFiles {
-		moveFileToBannerDir(file)
-	}
-
-	fmt.Printf("%sDownload success. Rerun the program.\n%s", colors.GREEN, colors.RESET)
-	PASS()
-}
-
-// after downloadAll() the files are moved to banners directory
-func moveFileToBannerDir(file string) {
-	path := os.ExpandEnv(PathToBannerFiles)
-	move := exec.Command("mv", file, path)
-	_, moveError := move.CombinedOutput()
-	if moveError != nil {
-		fmt.Fprintf(os.Stderr, "%serror moving %q check download link in \"plain/urls.txt if present\" %s\n", colors.RED,file,colors.RESET)
-		FAIL()
 	}
 }
 
@@ -176,15 +94,13 @@ func fixFileExtension(fileName string) string {
 }
 
 // makeDirectory creates the banner directory if it does not exist
-func makeDirectory(dir string) bool {
+func makeDirectory(dir string) {
 	path := CurrentWorkingDirectory + dir
 	dir = os.ExpandEnv(path)
 	err := os.Mkdir(dir, 0o775)
 	if err != nil {
 		log.Fatalf("\npath error %s\n\t%v\n", path, err)
-		return false
 	}
-	return true
 }
 
 // ReadBanner This function takes the name of a file in string format,
@@ -193,7 +109,10 @@ func ReadBanner(filePath string) map[rune][]string {
 	fileName := strings.ReplaceAll(filePath, "banners/", "")
 	fileName = fixFileExtension(fileName)
 	if !(fileName == "standard.txt" || fileName == "shadow.txt" || fileName == "thinkertoy.txt") {
-		fmt.Printf("%s not a valid banner file. Download it from your source and add it to banner/ directory.\n", fileName)
+		fmt.Printf(
+			"%s not a valid banner file. Download it from your source and add it to banner/ directory.\n",
+			fileName,
+		)
 		os.Exit(1)
 	}
 	// split the directory and file apart
@@ -201,13 +120,8 @@ func ReadBanner(filePath string) map[rune][]string {
 
 	// if the directory does not exist
 	if !directoryExist(dir) {
-
-		//create directory
-		if makeDirectory(dir) {
-			fmt.Printf("%q directory was missing, created successfully rerun the program.\n", strings.ReplaceAll(dir, "/", ""))
-		   // PASS()
-		}
-
+		// create directory regardless
+		makeDirectory(dir)
 	} else {
 		// check for file existence
 		filePath = checkFileExist(filePath)
@@ -217,11 +131,14 @@ func ReadBanner(filePath string) map[rune][]string {
 	// handle error if the file does not exist error and also other possible errors
 	if openingFileError != nil {
 		if os.IsNotExist(openingFileError) {
-			fmt.Println("lemons")
-			// file not found, exit unsuccessfully with code 1
-			os.Exit(1)
+			download(fileName)
+			file, openingFileError = os.Open(filePath)
+			if openingFileError != nil {
+				log.Fatalf("Failed to open banner file: \"%s\"", filePath)
+			}
+		} else {
+			log.Fatalf("Failed to open banner file: \"%s\"", filePath)
 		}
-		log.Fatalf("Failed to open banner file: \"%s\"", filePath)
 	}
 
 	defer file.Close()
