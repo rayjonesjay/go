@@ -5,31 +5,26 @@ import (
 	"ascii/help"
 	"regexp"
 	"strings"
+	"unicode"
 )
 
 // InspectFlagAndFile checks if the flag passed is valid --output=file.txt
 func InspectFlagAndFile(args []string) string {
-	if len(args) > 3 {
+	if len(args) > 1 {
 		help.PrintUsage()
 	}
 
 	// --output=<file.txt>
 	flagAndFile := args[0]
-
-	// remove trailing and leading spaces
-	flagAndFile = strings.TrimSpace(flagAndFile)
-
-	if strings.Contains(flagAndFile, "\n\r\t") {
-		help.PrintUsage()
+	for _, r := range flagAndFile {
+		if !unicode.IsPrint(r) {
+			help.PrintUsage()
+		}
 	}
+
 	// go run . --output=. Hello standard
-
-	flagPattern := `^(--)(output=)([^\s]+)$`
-
-	compiledFlagPattern := regexp.MustCompile(flagPattern)
-
+	compiledFlagPattern := regexp.MustCompile(`^(--)(output=)(.+)$`)
 	matches := compiledFlagPattern.FindStringSubmatch(flagAndFile)
-
 	if matches == nil {
 		help.PrintUsage()
 	}
