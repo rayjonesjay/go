@@ -1,6 +1,6 @@
 ## Description
 
-Ascii-art-fs is a program that receives two categories strings (`text` to be printed and `style` to be used) as arguments and outputs the `text` to be printed in a graphic representation of the specified `style` using ASCII.
+Ascii-art is a program that receives a string as an argument and displays the string in a graphic representation using ASCII.
 
 ## Authors
 
