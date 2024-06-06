@@ -146,7 +146,7 @@ func GetMap(style string) map[rune][]string {
 	m, ok := styleCache[style]
 	if !ok {
 		// This style graphics map isn't cached, create it
-		m = ReadBanner("banners/" + style + ".txt")
+		m = ReadBanner(style + ".txt")
 		styleCache[style] = m
 	}
 	return m

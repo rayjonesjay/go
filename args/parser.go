@@ -4,7 +4,7 @@ import (
 	"ascii/args/flags"
 	"ascii/data"
 	"ascii/help"
-	"fmt"
+	"regexp"
 )
 
 const (
@@ -21,33 +21,44 @@ type ParserOut struct {
 
 // Parse takes the flag '--output=file.txt' together with text and style to be printed
 func Parse(args []string) ParserOut {
-	lengthOfArguments := len(args)
-	outputFile := ""
+	mFlags, mArgs := parseFlags(args)
 
-	// check if flag was passed and is valid
-	if flags.IsValidFlag(args) {
-		flagAndFile := args[0]
-		var inspectError error
-		outputFile, inspectError = flags.InspectFlagAndFile(flagAndFile)
-		if inspectError != nil {
-			fmt.Printf("Usage Error: %s\n", inspectError.Error())
-			help.PrintUsage()
-		}
-		args = args[1:]
-		lengthOfArguments = lengthOfArguments - 1
+	var outputFile string
+	if len(mFlags) > 0 {
+		outputFile = flags.InspectFlagAndFile(mFlags)
 	}
+
+	args = mArgs
+	lengthOfArguments := len(mArgs)
 
 	if lengthOfArguments < 1 {
 		return ParserOut{OutputFile: outputFile}
 	} else if lengthOfArguments == 1 {
-		text := args[0]
+		text := mArgs[0]
 		drawInfo := data.DrawInfo{Text: Escape(text), Style: Standard}
 		return ParserOut{Draws: &drawInfo, OutputFile: outputFile}
 	} else if lengthOfArguments == 2 {
-		text, style := args[0], args[1]
+		text, style := mArgs[0], mArgs[1]
 		drawInfo := data.DrawInfo{Text: Escape(text), Style: style}
 		return ParserOut{Draws: &drawInfo, OutputFile: outputFile}
+	} else {
+		help.PrintUsage()
 	}
 
 	return ParserOut{OutputFile: outputFile}
+}
+
+func parseFlags(args []string) ([]string, []string) {
+	var f []string
+	re := regexp.MustCompile(`^--.*`)
+
+	argStart := 0
+	for i, s := range args {
+		if re.MatchString(s) {
+			f = append(f, s)
+			argStart = i + 1
+		}
+	}
+
+	return f, args[argStart:]
 }

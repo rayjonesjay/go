@@ -1,64 +1,41 @@
 package flags
 
 import (
-	"fmt"
-	"os"
+	"ascii/fmtx"
+	"ascii/help"
 	"regexp"
 	"strings"
+	"unicode"
 )
 
-// checks if the flag passed is valid --output=file.txt
-func InspectFlagAndFile(flagAndFile string) (string, error) {
-	if flagAndFile == "" {
-		return "", fmt.Errorf("no flag passed")
+// InspectFlagAndFile checks if the flag passed is valid --output=file.txt
+func InspectFlagAndFile(args []string) string {
+	if len(args) > 1 {
+		help.PrintUsage()
 	}
 
-	hasWhiteSpace := strings.ContainsAny(flagAndFile, " \t\n\r")
-
-	if hasWhiteSpace {
-		return "", fmt.Errorf("wrong flag passed. might contain whitespaces. %q", flagAndFile)
-	}
-
-	flagPattern := `^(--output=)(\w{1,255}\.txt)`
-	compiledPattern := regexp.MustCompile(flagPattern)
-
-	resultOfMatch := compiledPattern.FindStringSubmatch(flagAndFile)
-	validFlagFormat := "--output="
-
-	if validFlagFormat != resultOfMatch[1] {
-		return "", fmt.Errorf("wrong flag passed: expected %s got %s", validFlagFormat, resultOfMatch[1])
-	}
-
-	var fileToReceiveGraphics string
-	if compiledPattern.MatchString(flagAndFile) {
-		fileToReceiveGraphics = resultOfMatch[2]
-	} else {
-		index := strings.Index(flagAndFile, "=")
-		if index != -1 {
-			return "", fmt.Errorf("wrong file type passed: expected a file with '.txt' extension got %s", flagAndFile[index+1:])
-		} else {
-			return "", fmt.Errorf("wrong flag passed")
+	// --output=<file.txt>
+	flagAndFile := args[0]
+	for _, r := range flagAndFile {
+		if !unicode.IsPrint(r) {
+			help.PrintUsage()
 		}
 	}
 
-	return fileToReceiveGraphics, nil
-
-}
-
-func IsValidFlag(args []string) bool {
-
-	if len(args) == 0 {
-		return false
+	// go run . --output=. Hello standard
+	compiledFlagPattern := regexp.MustCompile(`^(--)(output=)(.+)$`)
+	matches := compiledFlagPattern.FindStringSubmatch(flagAndFile)
+	if matches == nil {
+		help.PrintUsage()
 	}
 
-	flag := args[0]
-
-	isValidFlag, matchStringError := regexp.MatchString(`--output=\w{1,255}\.txt`, flag)
-
-	if matchStringError != nil {
-		fmt.Fprintf(os.Stdout, "Error with regexp matching string.")
-		return false
+	// if the flag does not contain --output= and does not start with --
+	if !(strings.HasPrefix(flagAndFile, matches[1]) && strings.Contains(flagAndFile, matches[2])) {
+		help.PrintUsage()
 	}
 
-	return isValidFlag
+	if matches[3] == "." || matches[3] == ".." {
+		fmtx.FatalErrorf("invalid output file: %q\n", matches[3])
+	}
+	return matches[3]
 }
