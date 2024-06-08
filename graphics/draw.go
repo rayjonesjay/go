@@ -8,6 +8,7 @@ import (
 	"os/exec"
 
 	"ascii/security"
+	"strings"
 )
 
 const (
@@ -53,8 +54,8 @@ func deleteEmptyBanner(fileName string) {
 func download(fileName string) {
 	if !Contains([]string{"standard.txt", "shadow.txt", "thinkertoy.txt"}, fileName) {
 		log.Fatalf(
-			"%q is not a known banner file; download it from your source and add it to the %q directory\n",
-			fileName, bannersDir,
+			"%q is not a known banner; download the banner file from your source and add it to the %q directory\n",
+			strings.TrimSuffix(fileName, ".txt"), bannersDir,
 		)
 	}
 
@@ -100,7 +101,7 @@ func ReadBanner(fileName string) map[rune][]string {
 	file, openingFileError := os.Open(filePath)
 	// handle error if the file does not exist error and also other possible errors
 	if openingFileError != nil {
-		log.Fatalf("failed to open banner file: %q\n%v", filePath, openingFileError)
+		log.Fatalf("failed to open banner file: %q\n%v\n", filePath, openingFileError)
 	}
 	defer Close(file)
 
@@ -123,7 +124,6 @@ func ReadBanner(fileName string) map[rune][]string {
 				break
 			} else {
 				// append each line we read to the currentArt array
-
 				line := scan.Text()
 				currentArt[count] = line
 			}
