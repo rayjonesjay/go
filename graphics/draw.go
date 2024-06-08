@@ -2,9 +2,12 @@ package graphics
 
 import (
 	"bufio"
+	"fmt"
 	"log"
 	"os"
 	"os/exec"
+
+	"ascii/security"
 )
 
 const (
@@ -81,6 +84,8 @@ func makeDirectory(dir string) {
 	}
 }
 
+var maxRetries = 0
+
 // ReadBanner This function takes the name of a file in string format,
 // reads the ascii art inside the file, and maps each ascii art to its rune value
 func ReadBanner(fileName string) map[rune][]string {
@@ -103,7 +108,6 @@ func ReadBanner(fileName string) map[rune][]string {
 	scan := bufio.NewScanner(file)
 	// create an ascii art map to store the character and its equivalent ascii art
 	asciiMap := make(map[rune][]string)
-
 	// variable i is our loop counter, and it starts from 32 which is space character
 	for i := 32; i <= 126; i++ {
 		currentRune := rune(i)
@@ -119,12 +123,25 @@ func ReadBanner(fileName string) map[rune][]string {
 				break
 			} else {
 				// append each line we read to the currentArt array
+
 				line := scan.Text()
 				currentArt[count] = line
 			}
 		}
 
 		asciiMap[currentRune] = currentArt
+	}
+	// get the data for hashing
+	ok := security.GetDataAndCalculateHash(filePath, fileName)
+	if !ok {
+		maxRetries++
+		if maxRetries > 5 {
+			fmt.Printf("Invalid banner file\n")
+			os.Exit(1)
+		}
+		// download banner file
+		download(fileName)
+		return ReadBanner(fileName)
 	}
 	return asciiMap
 }
