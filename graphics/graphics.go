@@ -1,7 +1,10 @@
 package graphics
 
 import (
+	"ascii/caret"
+	color "ascii/colors"
 	"ascii/data"
+	"ascii/fmtx"
 	"fmt"
 	"os"
 	"strings"
@@ -13,6 +16,13 @@ type GMap = map[rune][]string
 // StyleMap represents a (banner style -> graphics map) map
 type StyleMap = map[string]GMap
 
+// ColorRange defines the range of indices (Start to End exclusive) of letters in a string,
+// that need to be colored by the specified Color.
+type ColorRange struct {
+	Color      color.Color
+	Start, End int
+}
+
 // Cache the (character -> graphics) in a map structure
 var styleCache = make(StyleMap)
 
@@ -20,11 +30,11 @@ var styleCache = make(StyleMap)
 // respective banner graphics style, and returns a string that draws the graphics
 func Draw(draw data.DrawInfo) string {
 	var b strings.Builder
-	var caret []string
+	var drawCaret []string
 
-	// Finalizes the [Draw] function by formatting the caret output
+	// Finalizes the [Draw] function by formatting the drawCaret output
 	finalize := func() string {
-		b.WriteString(SPrintCaret(caret))
+		b.WriteString(SPrintCaret(drawCaret))
 		b.WriteRune('\n')
 		return b.String()
 	}
@@ -37,19 +47,19 @@ func Draw(draw data.DrawInfo) string {
 		return finalize()
 	}
 
-	// The current text may be on different lines, if so, we may need to advance the caret to a new line
+	// The current text may be on different lines, if so, we may need to advance the drawCaret to a new line
 	lines := strings.Split(draw.Text, "\n")
 	for i, l := range lines {
 		if i == 0 {
-			caret = Drawln(caret, l, GetMap(draw.Style))
+			drawCaret = Drawln(drawCaret, l, GetMap(draw.Style))
 		} else {
 			// Write the previous line, we are yet to write another line
-			output := SPrintCaret(caret)
+			output := SPrintCaret(drawCaret)
 			b.WriteString(output)
 			// Prepare to write the next line
 			b.WriteRune('\n')
-			caret = nil
-			caret = Drawln(caret, l, GetMap(draw.Style))
+			drawCaret = nil
+			drawCaret = Drawln(drawCaret, l, GetMap(draw.Style))
 		}
 	}
 
@@ -59,20 +69,82 @@ func Draw(draw data.DrawInfo) string {
 // Drawln is a helper function used by the [Draw] function to draw some line of text from the current caret position.
 // This therefore, assumes that s is strictly a line of text, and, thus, does not contain any newline characters
 // This also expects a map of the ASCII characters to their respective art graphics
-func Drawln(caret []string, s string, m map[rune][]string) []string {
-	// A caret should ideally be 8 lines, we model the 8 lines with a slice of 8 strings
-	if caret == nil || len(caret) < 8 {
+func Drawln(lineCaret []string, s string, m map[rune][]string) []string {
+	// A lineCaret should ideally be 8 lines, we model the 8 lines with a slice of 8 strings
+	if lineCaret == nil || len(lineCaret) < 8 {
 		buffer := make([]string, 8)
-		copy(buffer, caret)
-		caret = buffer
+		copy(buffer, lineCaret)
+		lineCaret = buffer
 	}
 
 	if s == "" {
-		return caret
+		return lineCaret
 	}
 
+	return caret.Append(lineCaret, drawln(lineCaret, s, m))
+}
+
+// draw the text in a single line, taking into account the width of the terminal and the expected text alignment
+func drawln(in caret.Caret, s string, m map[rune][]string) (out caret.Caret) {
+	// Split this line into words
+	words := strings.Split(s, " ")
+
+	lineLength := 0
+	// termSize := 200
+	var wordCarets []caret.Caret
+	for _, w := range words {
+		wordCaret := drawWord(w, m)
+		lineLength += wordCaret.Size
+		wordCarets = append(wordCarets, wordCaret.Caret)
+	}
+
+	out = caret.Append(in, out)
+	for i, wc := range wordCarets {
+		if i != 0 {
+			spaceGraphics := m[' ']
+			out = caret.Append(out, spaceGraphics)
+		}
+		out = caret.Append(out, wc)
+	}
+
+	return
+}
+
+// returns the width of drawing the space character based on the given banner file's (letter -> graphics) map
+func spaceSize(m map[rune][]string) int {
+	graphics, ok := m[' ']
+	if ok && len(graphics) > 0 {
+		return len(graphics[0])
+	} else {
+		fmtx.FatalErrorf("Couldn't find the ASCII graphic for space character\n")
+		return 0
+	}
+}
+
+func drawWord(s string, m map[rune][]string) (sizedCaret caret.SizedCaret) {
+	colorRangeList := ColorRangeList(
+		s, []data.ColorInfo{
+			{
+				Color: color.Color{
+					R: 255,
+					G: 0,
+					B: 0,
+				},
+				Substr: "hi",
+			},
+			{
+				Color: color.Color{
+					R: 255,
+					G: 255,
+					B: 0,
+				},
+				Substr: "to",
+			},
+		},
+	)
+	c := caret.NewCaret()
 	// Map each ASCII character to its graphics, and append to the current caret position
-	for _, char := range s {
+	for i, char := range s {
 		g, ok := m[char]
 		if !ok {
 			if char < 32 || char == 127 {
@@ -85,18 +157,16 @@ func Drawln(caret []string, s string, m map[rune][]string) []string {
 			}
 		}
 
-		if len(caret) != len(g) {
-			fmt.Printf("Invalid graphics read for letter: \"%c\"\n", char)
-			os.Exit(1)
-		}
-
 		// Append the current character's graphics to its respective line in the caret
-		for i, line := range g {
-			caret[i] = caret[i] + line
+		sizedCaret.Size += len(g)
+		colorCode, resetCode := letterColor(colorRangeList, i)
+		for j, line := range g {
+			c[j] = c[j] + colorCode + line + resetCode
 		}
 	}
 
-	return caret
+	sizedCaret.Caret = c
+	return
 }
 
 // SPrintCaret given a caret, draws the graphics for the caret to a string and returns the string
@@ -150,4 +220,55 @@ func GetMap(style string) map[rune][]string {
 		styleCache[style] = m
 	}
 	return m
+}
+
+// ColorRangeList builds a list of ColorRange objects, that define the character indices in the string, text,
+// that ought to be colored by a given color. Note that the color flags define substrings in text,
+// that ought to be colored by any specified color
+func ColorRangeList(text string, colorFlags []data.ColorInfo) (out []ColorRange) {
+	for _, cf := range colorFlags {
+		iterativeText := text
+		for {
+			if cf.Substr == "" {
+				out = append(out, ColorRange{cf.Color, 0, len(text)})
+				break
+			}
+			startIndex := strings.Index(iterativeText, cf.Substr)
+			if startIndex == -1 {
+				break
+			}
+			endIndex := startIndex + len(cf.Substr)
+			out = append(out, ColorRange{cf.Color, startIndex, endIndex})
+
+			iterativeText = strings.Replace(iterativeText, cf.Substr, "", 1)
+		}
+	}
+	return
+}
+
+// checks if the given letter Index exists in any of the color range. If it does,
+// then it returns the ANSI escape code for the given color it is a range of,
+// and the ANSI color code to reset the color back to the terminal default; otherwise an empty color and reset code is
+// returned
+func letterColor(colorRange []ColorRange, letterIndex int) (string, string) {
+	for j := len(colorRange) - 1; j >= 0; j-- {
+		cr := colorRange[j]
+		if letterIndex >= cr.Start && letterIndex < cr.End {
+			// The letter at the current index, j, should be colored with the current color
+			return TerminalColorEscape(cr.Color), color.RESET
+		}
+	}
+	return "", ""
+}
+
+// TerminalColorEscape returns the ANSI color code escape sequence for the given RGB color.
+// Notes:
+// The ANSI escape sequence "\x1b[38;2;{r};{g};{b}m" is used to set the text color, where:
+// {r}, {g}, and {b} are the red, green, and blue color values, respectively
+// `\x1b[` is the Control Sequence Introducer (CSI).
+// `38` tells the terminal that we’re setting the foreground color.
+// `2` specifies that we’re using the RGB mode.
+// Another escape sequence `\x1b[0m` should be used to reset the text color to default
+func TerminalColorEscape(c color.Color) string {
+	return fmt.Sprintf("\x1b[38;2;%d;%d;%dm", c.R, c.G, c.B)
 }
