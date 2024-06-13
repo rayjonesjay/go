@@ -1,5 +1,7 @@
 package caret
 
+import "strings"
+
 type Caret = []string
 
 // SizedCaret adds a variable, Size, that keeps track of the width of the tracked Caret
@@ -57,9 +59,14 @@ func NewCaret() Caret {
 
 // SpaceCaret create a new caret, whereby each line in the caret is a space
 func SpaceCaret() Caret {
+	return NSpaceCaret(1)
+}
+
+// NSpaceCaret create a new caret, whereby each line in the caret is composed of exactly n spaces
+func NSpaceCaret(n int) Caret {
 	spCaret := NewCaret()
 	for i := range spCaret {
-		spCaret[i] = " "
+		spCaret[i] = strings.Repeat(" ", n)
 	}
 	return spCaret
 }
