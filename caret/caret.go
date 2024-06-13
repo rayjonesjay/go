@@ -54,3 +54,12 @@ func Copy(c Caret) Caret {
 func NewCaret() Caret {
 	return make(Caret, 8)
 }
+
+// SpaceCaret create a new caret, whereby each line in the caret is a space
+func SpaceCaret() Caret {
+	spCaret := NewCaret()
+	for i := range spCaret {
+		spCaret[i] = " "
+	}
+	return spCaret
+}
