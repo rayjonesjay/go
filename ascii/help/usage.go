@@ -22,8 +22,11 @@ func PrintLongUsage() {
 func printUsage(fileName string, exitCode int) {
 	usage, err := os.ReadFile(fileName)
 	if err != nil {
-		// We couldn't read the usage text our program was shipped with!
-		_, _ = fmt.Fprintln(os.Stderr, "Improper program installation. Re-installation recommended!!")
+		// We couldn't read the usage text, probably a test case
+		_, _ = fmt.Fprintln(
+			os.Stderr, `Usage: go run . [OPTION] [STRING] [BANNER]
+EX: go run . --output=<fileName.txt> something standard`,
+		)
 		os.Exit(1)
 	}
 	fmt.Print(string(usage))
