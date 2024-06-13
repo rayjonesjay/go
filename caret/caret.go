@@ -71,7 +71,7 @@ func NSpaceCaret(n int) Caret {
 	return spCaret
 }
 
-// LargestLength returns the length of the largest line in the given caret.
+// LargestLength returns the length of the longest line in the given caret.
 func LargestLength(c Caret) (length int) {
 	for _, line := range c {
 		if len(line) > length {
