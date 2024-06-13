@@ -145,7 +145,7 @@ func drawWord(s string, m map[rune][]string) (sizedCaret caret.SizedCaret) {
 	c := caret.NewCaret()
 	// Map each ASCII character to its graphics, and append to the current caret position
 	for i, char := range s {
-		g, ok := m[char]
+		charGraphics, ok := m[char]
 		if !ok {
 			if char < 32 || char == 127 {
 				// Ignore special ASCII characters including the delete character
@@ -157,10 +157,11 @@ func drawWord(s string, m map[rune][]string) (sizedCaret caret.SizedCaret) {
 			}
 		}
 
-		// Append the current character's graphics to its respective line in the caret
-		sizedCaret.Size += len(g)
+		// Increment the caret's size by the size of the current characters graphics
+		sizedCaret.Size += caret.LargestLength(charGraphics)
 		colorCode, resetCode := letterColor(colorRangeList, i)
-		for j, line := range g {
+		// Append the current character's graphics to its respective line in the caret
+		for j, line := range charGraphics {
 			c[j] = c[j] + colorCode + line + resetCode
 		}
 	}
