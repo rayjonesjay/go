@@ -84,13 +84,22 @@ func Drawln(lineCaret []string, s string, m map[rune][]string) []string {
 	return caret.Append(lineCaret, drawln(lineCaret, s, m))
 }
 
+const (
+	ALIGN_LEFT    = "left"
+	ALIGN_RIGHT   = "right"
+	ALIGN_CENTER  = "center"
+	ALIGN_JUSTIFY = "justify"
+)
+
 // draw the text in a single line, taking into account the width of the terminal and the expected text alignment
 func drawln(in caret.Caret, s string, m map[rune][]string) (out caret.Caret) {
 	// Split this line into words
 	words := strings.Split(s, " ")
 
 	lineLength := 0
-	// termSize := 200
+	termWidth := 120
+	align := getAlignment()
+
 	var wordCarets []caret.Caret
 	for _, w := range words {
 		wordCaret := drawWord(w, m)
@@ -98,16 +107,46 @@ func drawln(in caret.Caret, s string, m map[rune][]string) (out caret.Caret) {
 		wordCarets = append(wordCarets, wordCaret.Caret)
 	}
 
+	spaceWidth := (len(words) - 1) * spaceSize(m)
+	if spaceWidth < 0 {
+		spaceWidth = 0
+	}
+
+	addLength := termWidth - lineLength - spaceWidth
+	if addLength < 0 {
+		fmtx.FatalErrorf("Can't fit graphics to terminal; increase terminal size\n")
+	}
+
 	out = caret.Append(in, out)
+	justifySpacers := 0
+	if len(words)-1 > 0 {
+		justifySpacers = addLength / (len(words) - 1)
+	}
+
 	for i, wc := range wordCarets {
 		if i != 0 {
 			spaceGraphics := m[' ']
+			if align == ALIGN_JUSTIFY && justifySpacers > 0 {
+				out = caret.Append(out, caret.NSpaceCaret(justifySpacers))
+			}
 			out = caret.Append(out, spaceGraphics)
 		}
 		out = caret.Append(out, wc)
 	}
 
+	if align == ALIGN_RIGHT {
+		out = caret.Append(caret.NSpaceCaret(addLength), out)
+	} else if align == ALIGN_CENTER {
+		leftWidth := addLength / 2
+		out = caret.Append(caret.NSpaceCaret(leftWidth), out)
+	}
+
 	return
+}
+
+func getAlignment() string {
+	return "justify"
+	// return "right"
 }
 
 // returns the width of drawing the space character based on the given banner file's (letter -> graphics) map
