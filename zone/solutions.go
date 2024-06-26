@@ -540,7 +540,6 @@ func Gcd(a, b int) int {
 	return a
 }
 
-// this is my gcd algorithm i discoverd during checkpoint though not efficeint
 // i will improve it later when i get a girlfriend
 func RayGCD(a,b int) int {
 	var i int = 2 // start from 2 
