@@ -5,9 +5,10 @@ import (
 	"math"
 	"os"
 	"strconv"
-
+	"strings"
 	print "github.com/01-edu/z01"
 )
+
 
 func abs(number float64) float64{
 	if number < 0{
@@ -18,7 +19,7 @@ func abs(number float64) float64{
 
 func Sqrt(number float64) float64 {
 	const prec = 1e-10
-	// currentGuess := number 
+	currentGuess := number 
 	nextGuess := 0.0 
 	for {
 		nextGuess = 0.5 * (currentGuess+number/currentGuess)
@@ -30,6 +31,86 @@ func Sqrt(number float64) float64 {
 	// fmt.Println(count)
 	return nextGuess
 }
+
+
+
+func findErrorNums(nums []int) []int {
+    
+    mappy := make(map[int]int)
+
+    for _, num := range nums {
+        mappy[num]++
+    }
+    fmt.Println(mappy)
+    res := make([]int,2)
+    if len(mappy) == 1{
+        res[0] = nums[0]
+        res[1] = nums[0]+1
+        return res
+    }
+
+    for i := nums[0]; i <= nums[len(nums)-1]; i++{
+
+        if mappy[i] == 2{
+            // fmt.Println(res)
+            res[0] = i
+        }else if mappy[i] == 0{
+            fmt.Println(">>>",mappy[i])
+            res[1]= i
+        }
+    }
+    return res
+}
+
+func IsValidParentheses(s string) int {
+	slice := []rune(s)
+	stack := []rune{}
+
+	if len(slice) ==  1{
+		fmt.Println("false slice len is 1")
+		return -1
+	}
+
+	if slice[0] == ')'{
+		slice = slice[1:]
+	}
+	if slice[len(slice)-1]=='('{
+		slice = slice[:len(slice)-1]
+	}
+	length:=0
+
+	for _, bracket := range slice {
+		if bracket == '('{
+			stack = append(stack, bracket)
+		}else {
+			// //if its closing first check if the stack is eligible for popping
+			// if len(stack) == 0 {
+			// 	return -1 // there is no matching closing bracket
+			// }
+			if len(stack) > 0 && stack[len(stack)-1] == '('{
+				stack = stack[:len(stack)-1]
+				length+=2
+			}
+		}
+	}
+	// fmt.Println(length)
+	return length
+
+}
+// remove an element at given index
+func PopAt(slice []rune, index int) []rune {
+	result := []rune{}
+	result = append(slice[:index], slice[index+1:]...)
+	return result
+}
+
+// insert an item at index in slice
+func InsertItemAt(slice []rune, item rune, index int) []rune {
+	result := []rune{}
+	result = append(slice[:index], append([]rune{item}, slice[index+1:]...)...)
+	return result
+}
+
 
 
 func RevParam() {
@@ -516,4 +597,14 @@ func Compare(a,b string) int {
 		return 1
 	}
 	return -1
+}
+
+
+// This functions behaves the same way as cariage return
+func CarriageReturn(s string) string {
+	for strings.Contains(s, `\r`){
+		index := strings.Index(s, `\r`)
+		s = s[index+1:] + s[:index]
+	}
+	return s
 }
