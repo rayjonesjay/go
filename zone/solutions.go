@@ -10,6 +10,22 @@ import (
 )
 
 
+// removes the previous character to every occurrence of \b
+func BackSlash(s string) string {
+
+	// while string contains \b
+	for strings.Contains(s, `\b`){
+		if string(s[0]) == (`\b`){
+			s = s[1:]
+		}
+		// get index of where the \b is 
+		index := strings.Index(s, `\b`)
+		before := s[:index]
+		after := s[index+1:]
+		s = before[index-1:] + after
+	}
+	return s
+}
 func abs(number float64) float64{
 	if number < 0{
 		return -number
