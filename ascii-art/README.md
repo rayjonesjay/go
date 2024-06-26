@@ -1,18 +1,78 @@
+
 ## Description
 
-Ascii-art is a program that receives a `string` as an argument and displays the `string` in a graphic representation using ASCII.
+Ascii-art is a program that receives a string as an argument and displays the string in a graphic representation using ASCII.
 
 ## Authors
 
-- [x] najwang
-- [x] ramuiruri
-- [x] dochiel
+- [x] [najwang](https://learn.zone01kisumu.ke/git/najwang)
+- [x] [ramuiruri](https://learn.zone01kisumu.ke/git/ramuiruri)
+- [x] [dochiel](https://learn.zone01kisumu.ke/git/dochiel)
 
 ## Usage: how to use the program
 
-```bash
-go run main.go "message as string"
-```
+Assuming the current working directory, is set to the repository's root:
+
+1. Displaying the ASCII graphics of the text `Hello` using the default `standard` banner:
+   
+   ```shell
+   ascii-art$ go run . "Hello"
+    _    _          _   _          
+   | |  | |        | | | |         
+   | |__| |   ___  | | | |   ___   
+   |  __  |  / _ \ | | | |  / _ \  
+   | |  | | |  __/ | | | | | (_) | 
+   |_|  |_|  \___| |_| |_|  \___/  
+                                   
+                                   
+   ascii-art$
+   ```
+
+2. Displaying the ASCII graphics of the text `Hello` with the `shadow` banner:
+   
+   ```shell
+   ascii-art$ go run . "Hello" shadow
+                                    
+   _|    _|          _| _|          
+   _|    _|   _|_|   _| _|   _|_|   
+   _|_|_|_| _|_|_|_| _| _| _|    _| 
+   _|    _| _|       _| _| _|    _| 
+   _|    _|   _|_|_| _| _|   _|_|   
+                                    
+                                    
+   ascii-art$
+   ```
+
+3. Displaying the ASCII graphics of the text `Hello` with the `thinkertoy` banner:
+   
+   ```shell
+   ascii-art$ go run . "Hello" thinkertoy
+                    
+   o  o     o o     
+   |  |     | |     
+   O--O o-o | | o-o 
+   |  | |-' | | | | 
+   o  o o-o o o o-o 
+                    
+                    
+   ascii-art$
+   ```
+   
+4. Write the ASCII graphics of the text `Hello` with the `shadow` banner to the output file `output.txt`:
+
+   ```shell
+   ascii-art-output$ go run . --output=output.txt "Hello" shadow
+   ascii-art-output$ cat output.txt
+   
+   _|    _|          _| _|          
+   _|    _|   _|_|   _| _|   _|_|   
+   _|_|_|_| _|_|_|_| _| _| _|    _|
+   _|    _| _|       _| _| _|    _|
+   _|    _|   _|_|_| _| _|   _|_|
+   
+   
+   ascii-art-output$ ls
+   ```
 
 ## Implementation details: algorithm
 
@@ -31,7 +91,6 @@ go run main.go "message as string"
 
     - `go run . "Hello"`: The first argument is the text whose graphics is to be displayed.
     - `go run . "Hello" standard`: The first argument is the text whose graphics is to be displayed, while the second argument selects any of the given graphics files to use (must be one of `shadow`, `standard`, and `thinkertoy`).
-    - `go run . "Hello" standard "World" shadow "This is working" thinkertoy`: The first argument is the text whose graphics is to be displayed, while the second argument selects any of the given graphics files to use (must be one of `shadow`, `standard`, and `thinkertoy`). Consequently, the third argument is the text whose graphics is to be displayed, while the fourth argument selects any of the given graphics files to use (must be one of `shadow`, `standard`, and `thinkertoy`). Consequently, the fifth argument is the text whose graphics is to be displayed, while the sixth argument selects any of the given graphics files to use (must be one of `shadow`, `standard`, and `thinkertoy`). We follow this format for an infinite number of such formatted command-line arguments.
 
 3. Once done parsing the commandline args, the `main.go` file should also split the input string (the string to be displayed) into lines, then feed each line separately to a line graphics drawing function, `drawln`, that takes the line of string to be drawn, alongside the banner format, either of (`shadow`, `standard`, and `thinkertoy`). This should be done in a separate `draw` function, defined in the `main.go` file.
 
