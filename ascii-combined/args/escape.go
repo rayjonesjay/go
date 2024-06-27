@@ -1,0 +1,122 @@
+package args
+
+import (
+	"strconv"
+	"strings"
+)
+
+// Escape given a command line argument, or rather any such string, performs interpretation of the
+// following backslash escapes: \\, \a, \b, \f, \n, \r, \t, \v, \0, \0NNN (where NNN is
+// an octal value for the target ASCII character), and \xHH (where NNN is a
+// hexadecimal value for the target ASCII character)
+// Note:
+// Where it makes sense, the \0NNN octal escape takes precedence over the \0 null character
+// Any octal or hexadecimal values of ASCII characters that cannot be printed will be ignored
+func Escape(arg string) string {
+	ss := []rune(arg)
+	l := len(ss)
+
+	repMap := map[rune]rune{
+		'\\': '\\',
+		'a':  '\a',
+		'b':  '\b',
+		't':  '\t',
+		'n':  '\n',
+		'v':  '\v',
+		'f':  '\f',
+		'r':  '\r',
+	}
+
+	for i := 0; i < l; i++ {
+		c := ss[i]
+		j := i + 1
+		if c == '\\' && j < l {
+			nc := ss[j]
+			rep, ok := repMap[nc]
+			if ok {
+				ss[i] = rep
+				ss[j] = -1
+			} else if !replaceEscape(i, ss, 'x', 2, HexStringToDecimal) {
+				if !replaceEscape(i, ss, '0', 3, OctalStringToDecimal) {
+					// Probably an invalid octal after \0, try to interpret null character instead
+					if nc == '0' {
+						// Don't include null characters
+						ss[i] = -1
+						ss[j] = -1
+					}
+				}
+			}
+		}
+
+	}
+
+	return ToString(ss)
+}
+
+// Given that the ith character of the rune slice ss is the '\' character, and that the next character
+// is the escape character, uses the function f to interpret the next n characters after the escape character
+// as an integer representing a rune; this then replaces the whole escape sequence with this rune.
+// For example, this can thus be used to replace all hexadecimal escaped ASCII characters such as `\x61`
+// with its actual rune `a`
+func replaceEscape(i int, ss []rune, escape rune, n int, f func(string) (decimal int, ok bool)) (match bool) {
+	j := i + 1
+	k := j + 1
+	// \x61
+	// 0123
+	// i123
+	// ij12
+	// ijk1
+	l := len(ss)
+	if ss[j] == escape && l > j+n {
+		hex := ss[k : k+n]
+		decimal, ok := f(string(hex))
+		if ok {
+			match = true
+			ss[i] = rune(decimal)
+			for g := j; g < k+n; g++ {
+				ss[g] = -1
+				i++
+			}
+		}
+	}
+	return
+}
+
+// HexStringToDecimal given a string representing a hexadecimal number, returns the decimal
+// representation of the input hexadecimal, and whether the interpretation was successful
+// //(which is the case that the decimal value is in the range [0,127]
+func HexStringToDecimal(hex string) (decimal int, ok bool) {
+	return BaseStringToDecimal(16, hex)
+}
+
+// OctalStringToDecimal given a string representing an octal number, returns the decimal
+// representation of the input octal number, and whether the interpretation was successful
+// (which is the case that the decimal value is in the range [0,127]
+func OctalStringToDecimal(oct string) (decimal int, ok bool) {
+	return BaseStringToDecimal(8, oct)
+}
+
+// BaseStringToDecimal given a string representing a number to a given base, returns the decimal
+// representation of the input number, and whether the interpretation was successful
+// //(which is the case that the decimal value is in the range [0,127]
+func BaseStringToDecimal(base int, s string) (decimal int, ok bool) {
+	conv, err := strconv.ParseInt(s, base, 32)
+	if err == nil {
+		decimal = int(conv)
+		if decimal >= 0 && decimal <= 127 {
+			ok = true
+		}
+	}
+	return
+}
+
+// ToString given a slice of runes, returns a string representation of the runes, ignoring the '\0' (null character)
+func ToString(input []rune) string {
+	var b strings.Builder
+	for _, c := range input {
+		if c > 0 {
+			b.WriteRune(c)
+		}
+	}
+	return b.String()
+}
