@@ -48,7 +48,14 @@ func deleteEmptyBanner(fileName string) {
 
 // download banner files from https://learn.zone01kisumu.ke/git/root/public/src/branch/master/subjects/ascii-art/
 func download(fileName string) {
-	if !Contains([]string{"standard.txt", "shadow.txt", "thinkertoy.txt"}, fileName) {
+	if !func() bool {
+		for _, a := range []string{"standard.txt", "shadow.txt", "thinkertoy.txt"} {
+			if a == fileName {
+				return true
+			}
+		}
+		return false
+	}() {
 		log.Fatalf(
 			"%q is not a known banner file; download it from your source and add it to the %q directory\n",
 			fileName, bannersDir,
@@ -132,14 +139,4 @@ func ReadBanner(fileName string) map[rune][]string {
 // Close the given file
 func Close(file *os.File) {
 	_ = file.Close()
-}
-
-// Contains checks whether the string s is an element of the given array
-func Contains(arr []string, s string) bool {
-	for _, a := range arr {
-		if a == s {
-			return true
-		}
-	}
-	return false
 }
