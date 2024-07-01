@@ -13,13 +13,13 @@ type Mode struct {
 	To int 
 	From int 
 }
-var currentMode = Mode{From:10,To:2}
+var CurrentMode = Mode{From:2,To:10}
 
 func ReadExpression() {
 	reader, writer := bufio.NewReader(os.Stdin), bufio.NewWriter(os.Stdout)
 
 	for {
-		writer.WriteString("[in]: ")
+		writer.WriteString("[in ]: ")
 		writer.Flush()
 		input, readError := reader.ReadString('\n')
 		if readError != nil {
@@ -38,15 +38,15 @@ func ReadExpression() {
 
 		// check if the user is setting mode to different mode
 		if IsMode(input) {
-			currentMode = SetBase(input)
-			writer.WriteString("[mode set]: " + fmt.Sprintf("%v -> %v\n", currentMode.From, currentMode.To))
+			CurrentMode = SetBase(input)
+			writer.WriteString("[mode set]: " + fmt.Sprintf("%v -> %v\n", CurrentMode.From, CurrentMode.To))
 			writer.Flush()
 		} else if IsExpression(input) {
-			output = Evaluate.EvaluateExpression(input, currentMode.From, currentMode.To)
+			output = Evaluate.EvaluateExpression(input, CurrentMode.From, CurrentMode.To)
 			writer.WriteString("[out]: " + output + "\n")
 			writer.Flush()
 		} else {
-			writer.WriteString("wrong input!! ensure base is in range [2 to 10]\nUsage: [in]: mode=2->10\n")
+			writer.WriteString("invalid base number ensure base is in range [2 to 10]\nUsage: [in]: mode=2->10\n")
 			writer.Flush()
 		}
 	}
@@ -62,7 +62,7 @@ func SetBase(input string) Mode {
 
 	if len(matches) != 4 {
 		fmt.Println("Invalid mode format.")
-		return currentMode
+		return CurrentMode
 	}
 
 	left := matches[1]
@@ -77,7 +77,7 @@ func SetBase(input string) Mode {
 	}
 
 	fmt.Println("Base out of range. Must be between 2 and 10.")
-	return currentMode
+	return CurrentMode
 }
 
 func IsExpression(input string) bool {
