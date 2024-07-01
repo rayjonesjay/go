@@ -85,6 +85,13 @@ func IsExpression(input string) bool {
 	binaryPattern := `^[0-1]+$`
 	decimalPattern := `^[0-9]+$`
 	octalPattern := `^[0-7]+$`
+	index := strings.Index(input,".")
+
+	hasFraction := false
+
+	if index != -1{
+		hasFraction=true
+	}
 	re := regexp.MustCompile(hexPattern)
 	if re.MatchString(input){
 		return true 
@@ -94,11 +101,15 @@ func IsExpression(input string) bool {
 		return true 
 	}
 	re = regexp.MustCompile(octalPattern)
-	if re.MatchString(input){
+	if re.MatchString(input) || hasFraction {
+
 		return true 
 	}
 	re = regexp.MustCompile(decimalPattern)
-	return re.MatchString(input)
+	if re.MatchString(input) || hasFraction{
+		return true
+	}
+	return false
 }
 
 
