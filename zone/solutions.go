@@ -6,19 +6,31 @@ import (
 	"os"
 	"strconv"
 	"strings"
+
 	print "github.com/01-edu/z01"
 )
 
+// hello e a
+func searchreplace(s string, a, b string) string {
+	result := ""
+	for _, char := range s {
+		if char == rune(a[0]) {
+			result += string(b[0])
+		}else {
+			result += string(char)
+		}
+	}
+	return result
+}
 
 // removes the previous character to every occurrence of \b
 func BackSlash(s string) string {
-
 	// while string contains \b
-	for strings.Contains(s, `\b`){
-		if string(s[0]) == (`\b`){
+	for strings.Contains(s, `\b`) {
+		if string(s[0]) == (`\b`) {
 			s = s[1:]
 		}
-		// get index of where the \b is 
+		// get index of where the \b is
 		index := strings.Index(s, `\b`)
 		before := s[:index]
 		after := s[index+1:]
@@ -26,8 +38,9 @@ func BackSlash(s string) string {
 	}
 	return s
 }
-func abs(number float64) float64{
-	if number < 0{
+
+func abs(number float64) float64 {
+	if number < 0 {
 		return -number
 	}
 	return number
@@ -35,11 +48,11 @@ func abs(number float64) float64{
 
 func Sqrt(number float64) float64 {
 	const prec = 1e-10
-	currentGuess := number 
-	nextGuess := 0.0 
+	currentGuess := number
+	nextGuess := 0.0
 	for {
-		nextGuess = 0.5 * (currentGuess+number/currentGuess)
-		if abs(nextGuess-currentGuess) < prec{
+		nextGuess = 0.5 * (currentGuess + number/currentGuess)
+		if abs(nextGuess-currentGuess) < prec {
 			break
 		}
 		currentGuess = nextGuess
@@ -48,71 +61,67 @@ func Sqrt(number float64) float64 {
 	return nextGuess
 }
 
-
-
 func findErrorNums(nums []int) []int {
-    
-    mappy := make(map[int]int)
+	mappy := make(map[int]int)
 
-    for _, num := range nums {
-        mappy[num]++
-    }
-    fmt.Println(mappy)
-    res := make([]int,2)
-    if len(mappy) == 1{
-        res[0] = nums[0]
-        res[1] = nums[0]+1
-        return res
-    }
+	for _, num := range nums {
+		mappy[num]++
+	}
+	fmt.Println(mappy)
+	res := make([]int, 2)
+	if len(mappy) == 1 {
+		res[0] = nums[0]
+		res[1] = nums[0] + 1
+		return res
+	}
 
-    for i := nums[0]; i <= nums[len(nums)-1]; i++{
-
-        if mappy[i] == 2{
-            // fmt.Println(res)
-            res[0] = i
-        }else if mappy[i] == 0{
-            fmt.Println(">>>",mappy[i])
-            res[1]= i
-        }
-    }
-    return res
+	for i := nums[0]; i <= nums[len(nums)-1]; i++ {
+		if mappy[i] == 2 {
+			// fmt.Println(res)
+			res[0] = i
+		} else if mappy[i] == 0 {
+			fmt.Println(">>>", mappy[i])
+			res[1] = i
+		}
+	}
+	return res
 }
 
 func IsValidParentheses(s string) int {
 	slice := []rune(s)
 	stack := []rune{}
 
-	if len(slice) ==  1{
+	if len(slice) == 1 {
 		fmt.Println("false slice len is 1")
 		return -1
 	}
 
-	if slice[0] == ')'{
+	if slice[0] == ')' {
 		slice = slice[1:]
 	}
-	if slice[len(slice)-1]=='('{
+	if slice[len(slice)-1] == '(' {
 		slice = slice[:len(slice)-1]
 	}
-	length:=0
+	length := 0
 
 	for _, bracket := range slice {
-		if bracket == '('{
+		if bracket == '(' {
 			stack = append(stack, bracket)
-		}else {
+		} else {
 			// //if its closing first check if the stack is eligible for popping
 			// if len(stack) == 0 {
 			// 	return -1 // there is no matching closing bracket
 			// }
-			if len(stack) > 0 && stack[len(stack)-1] == '('{
+			if len(stack) > 0 && stack[len(stack)-1] == '(' {
 				stack = stack[:len(stack)-1]
-				length+=2
+				length += 2
 			}
 		}
 	}
 	// fmt.Println(length)
 	return length
-
 }
+
 // remove an element at given index
 func PopAt(slice []rune, index int) []rune {
 	result := []rune{}
@@ -126,8 +135,6 @@ func InsertItemAt(slice []rune, item rune, index int) []rune {
 	result = append(slice[:index], append([]rune{item}, slice[index+1:]...)...)
 	return result
 }
-
-
 
 func RevParam() {
 	result := "abcdefghijklmnopqrstuvwxyz"
@@ -184,46 +191,43 @@ func LastParam() {
 }
 
 func itoa(n int) string {
-	//check if n is negative or positive
-	isNegative:=false
+	// check if n is negative or positive
+	isNegative := false
 	if n < 0 {
-		isNegative = true 
-		//convert it to positve
+		isNegative = true
+		// convert it to positve
 		n = -n
-	}else if n >= 0 {
+	} else if n >= 0 {
 		n = n * 1
 	}
 
-	// slice to store the appened runes 
+	// slice to store the appened runes
 	result := []rune{}
 	// extract last digits for processing
 	for n > 0 {
-		lastDigit := n % 10 
-		result = append(result , rune(lastDigit+48))
+		lastDigit := n % 10
+		result = append(result, rune(lastDigit+48))
 		n = n / 10
 	}
 
-	// reverse our result before returing 
+	// reverse our result before returing
 	rev := func(s []rune) []rune {
-		i , j := 0 , len(s)-1
+		i, j := 0, len(s)-1
 		for i < len(s)/2 {
-			s[i], s[j] = s[j] , s[i]
+			s[i], s[j] = s[j], s[i]
 			i++
-			j--	
+			j--
 		}
-		return s 
+		return s
 	}
 	result = rev(result)
-
 
 	if isNegative {
 		result = append([]rune{'-'}, result[0:]...)
 	}
 
 	return string(result)
-
 }
-
 
 func ParamCount() {
 	args := os.Args[1:]
@@ -253,34 +257,33 @@ func CountDown() {
 
 func Atoi(s string) int {
 	// when s is zero lets just return 0
-	if s == "0"{
-		return 0 
-	} 
+	if s == "0" {
+		return 0
+	}
 
-	//check if number has a sign + or -
-	isNegative :=  false
+	// check if number has a sign + or -
+	isNegative := false
 
-	//so the sign comes the first before the number
-	if s[0] == '-'{
+	// so the sign comes the first before the number
+	if s[0] == '-' {
 		// if the sign is - then it is negative
-		isNegative=true
-		//remove the sign for processing 
+		isNegative = true
+		// remove the sign for processing
 		s = s[1:]
-	}else if s[0] == '+'{
+	} else if s[0] == '+' {
 		s = s[1:] // exclude the positive sign
 	}
 
 	result := 0
-	for _, num := range  s {
-		//num is of rune type
-		result = result * 10 + int(num-48)
+	for _, num := range s {
+		// num is of rune type
+		result = result*10 + int(num-48)
 	}
 
 	if isNegative {
 		return -result
 	}
 	return result
-
 }
 
 func InsertAt(s string, index int, r rune) string {
@@ -384,8 +387,6 @@ func AlphaMirror(s string) string {
 	}
 	return string(result)
 }
-
-
 
 func Mirror(r rune) rune {
 	if r >= 'a' && r < 'z' {
@@ -500,14 +501,40 @@ func FoldInt(f func(int, int) int, a []int, n int) int {
 	return n
 }
 
-func FindPrevPrime() {
+func FindPrevPrime(n int) int {
+	for i := n; i >= 2; i++ {
+		if isPrime(i) {
+			return i
+		}
+	}
+	return 0
+}
 
+func isPrime(n int) bool {
+	if n <= 1 {
+		return false
+	}
+
+	if n <= 3 {
+		return true
+	}
+
+	if n%2 == 0 || n%3 == 0 {
+		return false
+	}
+
+	for i := 5; i < i*i; i++ {
+		if i%2 == 0 || n%(i+2) == 0 {
+			return false
+		}
+		i = i + 6
+	}
+	return true
 }
 
 // TrialDivisionAlgorithm
 func TrialDivision(n int) bool {
-
-	//function to check if a number is prime using trial division algorithm
+	// function to check if a number is prime using trial division algorithm
 
 	if n <= 1 {
 		return false
@@ -520,7 +547,7 @@ func TrialDivision(n int) bool {
 	if n%2 == 0 || n%3 == 0 {
 		return false
 	}
-	//find the squareroot of n
+	// find the squareroot of n
 	k := int(math.Sqrt(float64(n)))
 	i := 5
 	for i < k {
@@ -533,7 +560,7 @@ func TrialDivision(n int) bool {
 }
 
 func Gcd(a, b int) int {
-	//using euclidean algo
+	// using euclidean algo
 	for b != 0 {
 		a, b = b, a%b
 	}
@@ -541,19 +568,20 @@ func Gcd(a, b int) int {
 }
 
 // i will improve it later when i get a girlfriend
-func RayGCD(a,b int) int {
-	var i int = 2 // start from 2 
+func RayGCD(a, b int) int {
+	var i int = 2      // start from 2
 	var result int = 1 // one because if i set it to zero the result will always be zero
 	for a != 0 || b != 0 {
-		if a % i == 0 && b % i == 0{
-			a = a / i 
+		if a%i == 0 && b%i == 0 {
+			a = a / i
 			b = b / i
 			result = result * i
 		}
-		i++ // increment i 
+		i++ // increment i
 	}
 	return result
 }
+
 func Multiple_gcd(List []int) int {
 	if len(List) == 0 {
 		return 0
@@ -584,40 +612,38 @@ func RomanNumbers() (string, string) {
 	num, err := strconv.Atoi(args[0])
 	if err != nil || num < 0 || num > 4000 {
 		fmt.Println("Error")
-		return "",""
+		return "", ""
 	}
-	return "",""
+	return "", ""
 }
 
-
 func IsPowerOf2(n int) bool {
-	count:=0
-	if n % 2 == 1{
-		return false 
+	count := 0
+	if n%2 == 1 {
+		return false
 	}
-	for n >= 0{
-		n/=2
+	for n >= 0 {
+		n /= 2
 		count++
 	}
-	if math.Pow(2,float64(count))==float64(n){
+	if math.Pow(2, float64(count)) == float64(n) {
 		return false
 	}
 	return false
 }
 
-func Compare(a,b string) int {
+func Compare(a, b string) int {
 	if a == b {
 		return 0
-	}else if a > b {
+	} else if a > b {
 		return 1
 	}
 	return -1
 }
 
-
 // This functions behaves the same way as cariage return
 func CarriageReturn(s string) string {
-	for strings.Contains(s, `\r`){
+	for strings.Contains(s, `\r`) {
 		index := strings.Index(s, `\r`)
 		s = s[index+1:] + s[:index]
 	}

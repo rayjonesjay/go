@@ -1,7 +1,8 @@
-package main 
+package main
 
 import (
-    "fmt"
+	"fmt"
+	"os"
 )
 
 func main() {
@@ -17,5 +18,9 @@ func main() {
     }(1,2){
         fmt.Println("a is less than b")
     }
-
+    args := os.Args[1:]
+    a:=args[0]
+    b:=args[1]
+    c:=args[2]
+    fmt.Println(searchreplace(a,b,c))
 }
