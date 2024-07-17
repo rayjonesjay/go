@@ -1,3 +1,4 @@
+package main
 
 import (
 	"fmt"
@@ -663,7 +664,6 @@ func CarriageReturn(s string) string {
 	return s
 }
 
-
 /*
 enc := "Eqfkpi vguvu ctg hwp cpf ejcnngpikpi!"
 known := "tests"
@@ -686,7 +686,7 @@ func Decode(enc, known string) string {
 	for _, word := range slice {
 		// for each word in slice we shift each lettern in that word 25 times
 		for i := 0; i < 100; i++ {
-			if shift(word, i) == known {
+			if Shift(word, i) == known {
 				isFound = true
 				shiftValue = i
 				fmt.Printf("shift value was %d and %d\n", shiftValue, 26-shiftValue)
@@ -696,7 +696,7 @@ func Decode(enc, known string) string {
 	}
 
 	if isFound {
-		return shift(enc, shiftValue)
+		return Shift(enc, shiftValue)
 	}
 
 	return "Invalid"
@@ -716,8 +716,3 @@ func Shift(word string, shift int) string {
 	return string(res)
 }
 
-func main() {
-	
-	decoded_string := decode(enc, known)
-	fmt.Println(decoded_string)
-}
