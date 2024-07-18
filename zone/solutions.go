@@ -11,7 +11,7 @@ import (
 )
 
 // hello e a
-func searchreplace(s string, a, b string) string {
+func Searchreplace(s string, a, b string) string {
 	result := ""
 	for _, char := range s {
 		if char == rune(a[0]) {
@@ -61,7 +61,7 @@ func Sqrt(number float64) float64 {
 	return nextGuess
 }
 
-func findErrorNums(nums []int) []int {
+func FindErrorNums(nums []int) []int {
 	mappy := make(map[int]int)
 
 	for _, num := range nums {
@@ -120,6 +120,21 @@ func IsValidParentheses(s string) int {
 	}
 	// fmt.Println(length)
 	return length
+}
+
+func ShiftWord(word string, shift int) string {
+	slice := []rune(word)
+	for i, char := range slice {
+		if char >= 'a' && char <= 'z' {
+			slice[i] = (char-'a'+rune(shift))%26 + 'a'
+		} else if char >= 'A' && char <= 'Z' {
+			slice[i] = (char-'A'+rune(shift))%26 + 'A'
+		} else {
+			slice[i] = char
+		}
+	}
+	fmt.Println(string(slice))
+	return string(slice)
 }
 
 // remove an element at given index
@@ -189,6 +204,8 @@ func LastParam() {
 	}
 	print.PrintRune('\n')
 }
+
+
 
 func itoa(n int) string {
 	// check if n is negative or positive
@@ -617,6 +634,11 @@ func RomanNumbers() (string, string) {
 	return "", ""
 }
 
+
+func IsPowerOf2_better(n int) bool {
+	return n > 0 && (n & (n-1))==0
+}
+
 func IsPowerOf2(n int) bool {
 	count := 0
 	if n%2 == 1 {
@@ -648,4 +670,32 @@ func CarriageReturn(s string) string {
 		s = s[index+1:] + s[:index]
 	}
 	return s
+}
+
+
+func TabMult(s string) {
+	num, _ := strconv.Atoi(s) // make your own atoi
+	fmt.Println(num)
+	for i := 1; i <= 9; i++ {
+		result := i * num
+		res_string := itoa(result)
+		i_string := itoa(i)
+		num_string := itoa(num)
+		printString(i_string)
+		print.PrintRune(' ')
+		print.PrintRune('x')
+		print.PrintRune(' ')
+		printString(num_string)
+		print.PrintRune(' ')
+		print.PrintRune('=')
+		print.PrintRune(' ')
+		printString(res_string)
+		print.PrintRune('\n')
+	}
+}
+
+func printString(s string) {
+	for _, char := range s {
+		print.PrintRune(char)
+	}
 }
