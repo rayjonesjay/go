@@ -1,17 +1,22 @@
 package fmtx
 
 import (
-	"ascii/colors"
-	"ascii/terminal"
 	"fmt"
 	"os"
+
+	"ascii/terminal"
+)
+
+const (
+	Red   = "\033[31m"
+	Reset = "\033[0m"
 )
 
 // Errorf writes the formated output string to the console standard error stream
 func Errorf(format string, args ...interface{}) {
 	// We are writing to the standard err, assumed to be the console, ignore any errors that may arise
 	if terminal.IsTerminal() {
-		format = colors.Red + format + colors.Reset
+		format = Red + format + Reset
 	}
 	_, err := fmt.Fprintf(os.Stderr, format, args...)
 	if err != nil {

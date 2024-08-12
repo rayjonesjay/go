@@ -1,12 +1,3 @@
-Usage:
-    go run . [OPTION] [STRING] [BANNER]
+Usage: go run . [OPTION] [STRING]
 
-Display ASCII graphics
-
-Examples:
-       go run . "Hello"
-       go run . "Hi!" shadow
-
-       go run . --output=banner.txt 'Hello There!' shadow
-       go run . --color=red kit "a king kitten have kit"
-       go run . --align=justify "how are you" shadow
+EX: go run . --color=<color> <substring to be colored> "something"

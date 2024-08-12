@@ -52,7 +52,7 @@ func ParseFlags(args []string) (out Args) {
 			}
 			out, err := matchFlag(arg, definedFlags)
 			if err != nil {
-				fmt.Printf("error: invalid argument %q\n%v\n\n", arg, err)
+				// fmt.Printf("error: invalid argument %q\n%v\n\n", arg, err)
 				help.PrintUsage()
 			}
 			if !contains(definedFlags, out.Name) {

@@ -2,10 +2,16 @@ package graphics
 
 import (
 	"bufio"
+	"fmt"
 	"log"
 	"os"
 	"os/exec"
+
+	"ascii/security"
+	"strings"
 )
+
+var MAX_RECURSION_DEPTH = 0
 
 const (
 	CurrentWorkingDirectory = "$PWD/"
@@ -50,18 +56,18 @@ func deleteEmptyBanner(fileName string) {
 func download(fileName string) {
 	if !Contains([]string{"standard.txt", "shadow.txt", "thinkertoy.txt"}, fileName) {
 		log.Fatalf(
-			"%q is not a known banner file; download it from your source and add it to the %q directory\n",
-			fileName, bannersDir,
+			"%q is not a known banner; download the banner file from your source and add it to the %q directory\n",
+			strings.TrimSuffix(fileName, ".txt"), bannersDir,
 		)
 	}
 
 	rawLink := "https://learn.zone01kisumu.ke/git/root/public/raw/branch/master/subjects/ascii-art/"
 	fullPath := rawLink + fileName
 	downloadCommand := exec.Command("wget", fullPath)
-	output, err := downloadCommand.CombinedOutput()
+	_, err := downloadCommand.CombinedOutput()
 
 	if err != nil {
-		log.Fatalf("failed to download banner: %q\n%s\n", fileName, output)
+		log.Fatalf("failed to download %q check your internet or download link\n", fileName)
 	} else {
 		move := exec.Command("mv", fileName, "banners/")
 		_, err := move.CombinedOutput()
@@ -95,7 +101,7 @@ func ReadBanner(fileName string) map[rune][]string {
 	file, openingFileError := os.Open(filePath)
 	// handle error if the file does not exist error and also other possible errors
 	if openingFileError != nil {
-		log.Fatalf("failed to open banner file: %q\n%v", filePath, openingFileError)
+		log.Fatalf("failed to open banner file: %q\n%v\n", filePath, openingFileError)
 	}
 	defer Close(file)
 
@@ -103,8 +109,7 @@ func ReadBanner(fileName string) map[rune][]string {
 	scan := bufio.NewScanner(file)
 	// create an ascii art map to store the character and its equivalent ascii art
 	asciiMap := make(map[rune][]string)
-
-	// variable i is our loop counter, and it starts from 32 which is space character
+	// variable i is our loop counter, and it starts from 32 which is space character up to tilde
 	for i := 32; i <= 126; i++ {
 		currentRune := rune(i)
 		// skip one line
@@ -125,6 +130,18 @@ func ReadBanner(fileName string) map[rune][]string {
 		}
 
 		asciiMap[currentRune] = currentArt
+	}
+	// get the data for hashing
+	ok := security.GetDataAndCalculateHash(filePath, fileName)
+	if !ok {
+		MAX_RECURSION_DEPTH++
+		if MAX_RECURSION_DEPTH > 5 {
+			fmt.Printf("file source might be corrupted! check the download link\n")
+			os.Exit(1)
+		}
+		// download banner file
+		download(fileName)
+		return ReadBanner(fileName)
 	}
 	return asciiMap
 }

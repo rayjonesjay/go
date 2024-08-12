@@ -1,14 +1,15 @@
 package graphics
 
 import (
+	"fmt"
+	"os"
+	"strings"
+
 	"ascii/caret"
 	color "ascii/colors"
 	"ascii/data"
 	"ascii/fmtx"
 	"ascii/terminal"
-	"fmt"
-	"os"
-	"strings"
 )
 
 // GMap represents a (character -> graphics) map
@@ -285,6 +286,10 @@ func GetMap(style string) GMap {
 // that ought to be colored by any specified color
 func ColorRangeList(text string, colorFlags []data.ColorInfo) (out []ColorRange) {
 	for _, cf := range colorFlags {
+		if strings.Contains(cf.Substr, `\n`) {
+			fmt.Fprintf(os.Stderr, "substring \"%s\" cannot contain whitespace characters\n", cf.Substr)
+			os.Exit(1)
+		}
 		iterativeText := text
 		for {
 			if cf.Substr == "" {
@@ -328,5 +333,5 @@ func letterColor(colorRange []ColorRange, letterIndex int) (string, string) {
 // `2` specifies that we’re using the RGB mode.
 // Another escape sequence `\x1b[0m` should be used to reset the text color to default
 func TerminalColorEscape(c color.Color) string {
-	return fmt.Sprintf("\x1b[38;2;%d;%d;%dm", c.R, c.G, c.B)
+	return fmt.Sprintf("\x1b[38;2;%d;%d;%dm", c.Red, c.Green, c.Blue)
 }

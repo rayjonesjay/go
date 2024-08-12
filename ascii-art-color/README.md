@@ -7,7 +7,12 @@ Ascii-art is a program that receives a string as an argument and displays the st
 - [x] [najwang](https://learn.zone01kisumu.ke/git/najwang)
 - [x] [ramuiruri](https://learn.zone01kisumu.ke/git/ramuiruri)
 - [x] [dochiel](https://learn.zone01kisumu.ke/git/dochiel)
-
+## Features
+   Supports:
+   1.color
+   2.output
+   3.justify
+   4.fs
 ## Usage: how to use the program
 
 Assuming the current working directory, is set to the repository's root:
@@ -15,7 +20,7 @@ Assuming the current working directory, is set to the repository's root:
 1. Displaying the ASCII graphics of the text `Hello` using the default `standard` banner:
    
    ```shell
-   ascii-art$ go run . "Hello"
+   ascii-art-color$ go run . "Hello"
     _    _          _   _          
    | |  | |        | | | |         
    | |__| |   ___  | | | |   ___   
@@ -24,13 +29,13 @@ Assuming the current working directory, is set to the repository's root:
    |_|  |_|  \___| |_| |_|  \___/  
                                    
                                    
-   ascii-art$
+   ascii-art-color$
    ```
 
 2. Displaying the ASCII graphics of the text `Hello` with the `shadow` banner:
    
    ```shell
-   ascii-art$ go run . "Hello" shadow
+   ascii-art-color$ go run . "Hello" shadow
                                     
    _|    _|          _| _|          
    _|    _|   _|_|   _| _|   _|_|   
@@ -45,7 +50,7 @@ Assuming the current working directory, is set to the repository's root:
 3. Displaying the ASCII graphics of the text `Hello` with the `thinkertoy` banner:
    
    ```shell
-   ascii-art$ go run . "Hello" thinkertoy
+   ascii-art-color$ go run . "Hello" thinkertoy
                     
    o  o     o o     
    |  |     | |     
@@ -54,7 +59,7 @@ Assuming the current working directory, is set to the repository's root:
    o  o o-o o o o-o 
                     
                     
-   ascii-art$
+   ascii-art-color$
    ```
    
 4. Write the ASCII graphics of the text `Hello` with the `shadow` banner to the output file `output.txt`:
@@ -72,6 +77,19 @@ Assuming the current working directory, is set to the repository's root:
    
    ascii-art-output$ ls
    ```
+5. You can use specify how you want a text  to be colored.
+   ```shell
+   ascii-art-color$ go run . --color=red "hello world"
+   ```                                                             _       _  
+   | |            | | | |                                         | |     | | 
+   | |__     ___  | | | |   ___         __      __   ___    _ __  | |   __| | 
+   |  _ \   / _ \ | | | |  / _ \        \ \ /\ / /  / _ \  | '__| | |  / _` | 
+   | | | | |  __/ | | | | | (_) |        \ V  V /  | (_) | | |    | | | (_| | 
+   |_| |_|  \___| |_| |_|  \___/          \_/\_/    \___/  |_|    |_|  \__,_|
+   ```
+6. Here is an example output of our program supporting multiple colors.
+
+![example output](help/output.png)
 
 ## Implementation details: algorithm
 
