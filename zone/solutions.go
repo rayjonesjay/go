@@ -16,7 +16,7 @@ func Searchreplace(s string, a, b string) string {
 	for _, char := range s {
 		if char == rune(a[0]) {
 			result += string(b[0])
-		}else {
+		} else {
 			result += string(char)
 		}
 	}
@@ -204,8 +204,6 @@ func LastParam() {
 	}
 	print.PrintRune('\n')
 }
-
-
 
 func itoa(n int) string {
 	// check if n is negative or positive
@@ -634,9 +632,8 @@ func RomanNumbers() (string, string) {
 	return "", ""
 }
 
-
 func IsPowerOf2_better(n int) bool {
-	return n > 0 && (n & (n-1))==0
+	return n > 0 && (n&(n-1)) == 0
 }
 
 func IsPowerOf2(n int) bool {
@@ -671,7 +668,6 @@ func CarriageReturn(s string) string {
 	}
 	return s
 }
-
 
 func TabMult(s string) {
 	num, _ := strconv.Atoi(s) // make your own atoi

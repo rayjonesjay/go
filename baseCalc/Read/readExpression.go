@@ -2,18 +2,20 @@
 package Read
 
 import (
+	"baseCalc/Evaluate"
 	"bufio"
 	"fmt"
 	"os"
-	"strings"
-	"baseCalc/Evaluate"
 	"regexp"
+	"strings"
 )
+
 type Mode struct {
-	To int 
-	From int 
+	To   int
+	From int
 }
-var CurrentMode = Mode{From:2,To:10}
+
+var CurrentMode = Mode{From: 2, To: 10}
 
 func ReadExpression() {
 	reader, writer := bufio.NewReader(os.Stdin), bufio.NewWriter(os.Stdout)
@@ -52,7 +54,6 @@ func ReadExpression() {
 	}
 }
 
-
 // Check if user input is mode and returns from(int) to(int)
 func SetBase(input string) Mode {
 	pattern := `^mode=(\d{1,2})(->|<-)(\d{1,2})$`
@@ -85,71 +86,67 @@ func IsExpression(input string) bool {
 	binaryPattern := `^[0-1]+$`
 	decimalPattern := `^[0-9]+$`
 	octalPattern := `^[0-7]+$`
-	index := strings.Index(input,".")
+	index := strings.Index(input, ".")
 
 	hasFraction := false
 
-	if index != -1{
-		hasFraction=true
+	if index != -1 {
+		hasFraction = true
 	}
 	re := regexp.MustCompile(hexPattern)
-	if re.MatchString(input){
-		return true 
+	if re.MatchString(input) {
+		return true
 	}
 	re = regexp.MustCompile(binaryPattern)
-	if re.MatchString(input){
-		return true 
+	if re.MatchString(input) {
+		return true
 	}
 	re = regexp.MustCompile(octalPattern)
 	if re.MatchString(input) || hasFraction {
 
-		return true 
+		return true
 	}
 	re = regexp.MustCompile(decimalPattern)
-	if re.MatchString(input) || hasFraction{
+	if re.MatchString(input) || hasFraction {
 		return true
 	}
 	return false
 }
-
 
 func IsMode(input string) bool {
 	pattern := regexp.MustCompile(`^mode=\d{1,2}(->|<-)\d{1,2}$`)
 	return pattern.MatchString(input)
 }
 
-
-
 func stringToInt(s string) int {
-	if s[0] == '-'{
+	if s[0] == '-' {
 		fmt.Fprintf(os.Stderr, "cannot compute base of negatives")
 		os.Exit(1)
 	}
 
-	if s[0] == '+'{
+	if s[0] == '+' {
 		s = s[1:]
 	}
 
 	var result int = 0
-	for _, char := range  s {
-		result = result * 10 + int(char-'0')
+	for _, char := range s {
+		result = result*10 + int(char-'0')
 	}
 
 	return result
 }
 
-
 // arrow direction tells the program to convert from which base to which base.
-func arrowDirection(left,arrow,right string) (from,to string) {
+func arrowDirection(left, arrow, right string) (from, to string) {
 	if arrow == "->" {
-		return left,right
+		return left, right
 	}
-	return right,left
+	return right, left
 }
 
 func IsDigitRange(s string) bool {
 	intS := stringToInt(s)
-	if intS >= 2 && intS <= 10{
+	if intS >= 2 && intS <= 10 {
 		return true
 	}
 	return false
