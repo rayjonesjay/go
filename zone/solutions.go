@@ -582,7 +582,6 @@ func Gcd(a, b int) int {
 	return a
 }
 
-// i will improve it later when i get a girlfriend
 func RayGCD(a, b int) int {
 	var i int = 2      // start from 2
 	var result int = 1 // one because if i set it to zero the result will always be zero
