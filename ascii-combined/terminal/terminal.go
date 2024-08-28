@@ -58,3 +58,4 @@ func IsTerminal() bool {
 	)
 	return err == 0
 }
+

@@ -149,7 +149,7 @@ func arrowDirection(left,arrow,right string) (from,to string) {
 
 func IsDigitRange(s string) bool {
 	intS := stringToInt(s)
-	if intS >= 2 && intS <= 10{
+	if intS >= 2 && intS <= 10	{
 		return true
 	}
 	return false
