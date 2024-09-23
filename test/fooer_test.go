@@ -38,7 +38,7 @@ func TestFooer2(t *testing.T) {
 	if result != "f oo" {
 		t.Errorf("result was incorrect, got: %s, want: %s.", result, "foo")
 	}
-	t.Errorf("stop the test now, we have seen enough")
+	t.Fatal("stop the test now, we have seen enough")
 	t.Errorf("this wont be executed")
 }
 
