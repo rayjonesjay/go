@@ -694,3 +694,22 @@ func printString(s string) {
 		print.PrintRune(char)
 	}
 }
+
+func CanJump(s []uint) bool {
+	if len(s) == 1 {
+		return true
+	}
+
+	var curr uint = 0
+	for i := 0; i < len(s); {
+		if s[i] == 0 && i != len(s)-1 {
+			return false
+		}
+		curr = s[i] + uint(i)
+		if int(curr) == len(s)-1 {
+			return true
+		}
+		i = int(curr)
+	}
+	return false
+}
