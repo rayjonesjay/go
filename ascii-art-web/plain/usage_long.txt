@@ -1,0 +1,67 @@
+Usage:
+    go run . [OPTION] [STRING] [BANNER]
+
+Display ASCII graphics
+
+STRING:
+    Text whose graphics is to be displayed
+
+OPTION:
+    --output=file
+        write the ASCII graphics to the given file instead of printing to console output
+    --help
+        displays an elaborate program help message and exits
+
+BANNER:
+    The banner style to use to draw the given text
+    Supported banner styles: (shadow, standard, or thinkertoy)
+
+Web Server:
+    Running the program without any of the optional arguments launches a Web Server,
+    through which the ASCII-ART may be generated from the homepage.
+
+Examples:
+    go run .
+    go run main.go "Hello"
+    go run main.go "Hi!" shadow
+
+    go run . --output=output.txt something standard
+
+Description:
+       In terminal mode, the following backslash escape sequences are recognized:
+
+       \\     backslash
+
+       \a     alert (BEL)
+
+       \b     backspace
+
+       \f     form feed
+
+       \n     new line
+
+       \r     carriage return
+
+       \t     horizontal tab
+
+       \v     vertical tab
+
+       \0NNN  byte with octal value NNN (3 digits)
+
+       \0    null character
+
+       \xHH   byte with hexadecimal value HH (2 digits)
+
+       Note:
+          Where it makes sense, the \0NNN octal escape takes precedence over the \0 null character.
+          Any octal or hexadecimal values of ASCII characters that cannot be printed will be ignored.
+
+AUTHOR
+       Written by Nicholas Ajwang, Ray Muiruri, and David Ochiel.
+
+COPYRIGHT
+       Copyright © 2024 Zone01 Kisumu Inc.  License MIT: https://opensource.org/license/mit.
+       This is free software: you are free to change and redistribute it.  There is NO WARRANTY, to the extent permitted by law.
+
+SEE ALSO
+       Full documentation https://learn.zone01kisumu.ke/git/najwang/ascii-art

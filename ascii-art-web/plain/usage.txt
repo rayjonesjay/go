@@ -1,0 +1,4 @@
+Usage:
+    go run . [OPTION] [STRING] [BANNER]
+
+More help? Run with --help option.
