@@ -1,0 +1,67 @@
+.checkbox-item .checkbox-label{
+    position: relative;
+    display: block;
+    cursor: pointer;
+    margin: 0 auto 0;
+    width: 40px;
+    height: 20px;
+}
+
+.checkbox-item:last-child .checkbox-label{
+    margin-bottom: 0;
+}
+
+.checkbox-item .checkbox-label .checkbox-input{
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    z-index: 1;
+    cursor: pointer;
+}
+
+.checkbox-item .checkbox-label .checkbox_mark{
+    display: inline-block;
+    position: relative;
+    border-radius: 10px;
+}
+
+.checkbox-item .checkbox-label .checkbox_mark:before,
+.checkbox-item .checkbox-label .checkbox_mark:after{
+    content: "";
+    position: absolute;
+    transition: all 0.5s ease;
+}
+
+.checkbox-item .checkbox-label .checkbox_mark{
+    background: #f0f0f0;
+    width: 100%;
+    height: 100%;
+}
+
+.checkbox-item .checkbox-label .checkbox_mark:before{
+    top: 3px;
+    left: 3px;
+    --size: 14px;
+    width: var(--size);
+    height: var(--size);
+    background: #fff;
+    border-radius: 50%;
+}
+
+.checkbox-item .checkbox-label .checkbox-input:checked ~ .checkbox_mark{
+    background: rgb(33, 150, 243);
+}
+
+.checkbox-item .checkbox-label .checkbox-input:checked ~ .checkbox_mark:before{
+    left: 54%;
+}
+
+/* Checkbox Text Content*/
+.checkbox-text {
+    font-weight: 600;
+    font-size: 14px;
+    text-align: center;
+    padding: 0 6px;
+    cursor: pointer;
+}

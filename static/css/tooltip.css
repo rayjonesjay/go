@@ -1,0 +1,29 @@
+.tooltip {
+    position: fixed;
+    right: 10%;
+    bottom: 50px;
+    z-index: 2;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: none;
+}
+
+.tooltip-layout {
+    display: flex;
+    align-items: center;
+    background-color: #BBF2C8;
+    border: 1px solid #24BF5B;
+    padding: 5px 8px;
+    width: fit-content;
+    border-radius: 5px;
+}
+
+.tooltip-layout .material-symbols-outlined {
+    color: #17A649;
+}
+
+.tooltip-text {
+    color: #17A649;
+    font-size: 15px;
+    text-align: center;
+    margin-left: 5px;
+}

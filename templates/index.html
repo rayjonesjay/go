@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>ASCII Art</title>
+    <link href="/static/icons/favicon.ico" rel="icon" type="image/x-icon"/>
+    <link href="/static/css/material-button.css" rel="stylesheet">
+    <link href="/static/css/index.css" rel="stylesheet">
+    <link href="/static/css/select.css" rel="stylesheet">
+    <link href="/static/css/checkbox.css" rel="stylesheet">
+    <link href="/static/css/tab.css" rel="stylesheet">
+    <link href="/static/css/with-love.css" rel="stylesheet">
+    <link href="/static/css/result.css" rel="stylesheet">
+    <link href="/static/css/tooltip.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,1,0" />
+</head>
+
+<body>
+<div class="container">
+    <h1 class="mg-10">ASCII Art Web</h1>
+    <form action="/ascii-art" class="flex-container mg-10" method="POST">
+        <label for="text">Art Text</label>
+        <textarea autofocus id="text" name="text" placeholder="Your art awaits..." required>{{if .Text}}{{.Text}}{{end}}</textarea>
+
+        <div class="row-container mg-lr-10">
+            <div class="checkbox-item">
+                <label class="checkbox-label">
+                    <input class="checkbox-input" id="terminal" name="terminal" type="checkbox" {{ if eq .Terminal "on" }}checked{{ end }}>
+                    <span class="checkbox_mark"></span>
+                </label>
+            </div>
+
+            <label class="checkbox-text" for="terminal">Emulate Terminal</label>
+        </div>
+
+        <div class="spacer"></div>
+
+        <label for="banner">Style</label>
+        <div class="custom-select mg-10">
+            <select id="banner" name="banner">
+                <option value="standard" {{ if eq .Banner "standard" }}selected{{ end }}>Standard</option>
+                <option value="shadow" {{ if eq .Banner "shadow" }}selected{{ end }}>Shadow</option>
+                <option value="thinkertoy" {{ if eq .Banner "thinkertoy" }}selected{{ end }}>Thinkertoy</option>
+            </select>
+        </div>
+
+        <button class="material-button mg-10" type="submit">generate ASCII art</button>
+    </form>
+</div>
+
+
+{{if .Result}}
+
+<div class="spacer-lg"></div>
+
+<div class="result-container">
+
+    <div class="tab-container">
+        <div class="tab-text tab-item-text">Text Art</div>
+        <div class="tab-highlight tab-item-highlight">
+            <div class="tab-highlight"></div>
+        </div>
+    </div>
+
+    <div class="spacer-full"></div>
+    <div class="mg-10"></div>
+
+    <div id="result">
+        <pre id="result-pre" class="mg-lr-10">{{.Result}}</pre>
+        <div id="copy-text">
+            <span class="material-symbols-outlined">content_copy</span>
+        </div>
+    </div>
+
+    <div class="spacer-full mg-20"></div>
+
+    <div class="love">
+        Made with
+        <span class="fa-heart material-symbols-outlined">favorite</span>
+        in <a href="https://www.zone01kisumu.ke/" target="_blank">Zone01 🇰🇪 Kisumu</a>
+    </div>
+</div>
+
+<div class="tooltip">
+    <div class="tooltip-layout">
+        <div class="material-symbols-outlined">check_circle</div>
+        <div class="tooltip-text">Copied to clipboard</div>
+    </div>
+</div>
+
+<script src="/static/js/result.js"></script>
+{{end}}
+
+</body>
+</html>
