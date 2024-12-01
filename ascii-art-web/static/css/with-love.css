@@ -1,0 +1,30 @@
+.love {
+    color: #666;
+    font-size: 12px;
+    text-align: center;
+}
+
+.love a {
+    color: #000000;
+    text-decoration: none;
+}
+
+.love .fa-heart {
+    color: #E90606;
+    margin: 0 3px;
+    font-size: 10px;
+    animation: pound 0.5s infinite alternate;
+    -webkit-animation: pound 0.5s infinite alternate;
+}
+
+@-webkit-keyframes pound {
+    to {
+        transform: scale(1.2);
+    }
+}
+
+@keyframes pound {
+    to {
+        transform: scale(1.2);
+    }
+}
