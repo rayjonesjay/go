@@ -10,10 +10,18 @@ import (
 )
 
 func main(){
+	// read
 	// format
 	// sort
 	// compute
-	fd , _ := os.Open("input.txt")
+	
+	// read
+	arg := os.Args[1:]
+	if len(arg) != 1 {
+		fmt.Println("go run main.go <input.file.txt>")
+		return
+	}
+	fd , _ := os.Open(arg[0])
 	scanner := bufio.NewScanner(fd)
 	leftArr := []int{}
 	rightArr := []int{}
@@ -39,7 +47,20 @@ func main(){
 	for i := 0; i < len(leftArr); i++{
 		distance = distance + absolute(leftArr[i]-rightArr[i])	
 	}
-	fmt.Println(distance)
+	fmt.Println("distance",distance)
+
+
+	// question2
+	var sscore int64 = 0
+	frequencyRight := make(map[int]int64)
+	
+	for _, n := range rightArr {
+		frequencyRight[n]++
+	}
+	for _, n := range leftArr {
+		sscore = sscore + (frequencyRight[n]*int64(n))
+	}
+	fmt.Println("similarity score",sscore)	
 }
 
 func absolute(n int) int {
