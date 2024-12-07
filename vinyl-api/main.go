@@ -2,11 +2,10 @@ package main
 
 import (
 	"fmt"
+	"github.com/gin-gonic/gin"
 	"io"
 	"net/http"
 	"strconv"
-
-	"github.com/gin-gonic/gin"
 )
 
 type album struct {
@@ -55,7 +54,7 @@ func getUserById(c *gin.Context) {
 
 }
 
-func postAlbum(c *gin.Context){
+func postAlbum(c *gin.Context) {
 	var newAlbum album
 
 	err := c.BindJSON(&newAlbum)
@@ -63,13 +62,31 @@ func postAlbum(c *gin.Context){
 		return
 	}
 	albums = append(albums, newAlbum)
-	c.IndentedJSON(http.StatusCreated,newAlbum)
+	// you can use Context.IndentedJSON in development but not preferred during production
+	// since it consumes alot of CPU when prettifying or formating the json object
+	// use Context.JSON
+	c.JSON(http.StatusCreated, newAlbum)
 }
+
+func GetUserById(c *gin.Context) {
+	// use Context.Param to retrieve the id path parameter from the URL
+	id := c.Param("id")
+	for _, cc := range albums {
+		if cc.ID == id {
+			c.IndentedJSON(http.StatusOK, cc)
+			return
+		}
+	}
+	c.IndentedJSON(http.StatusNotFound, gin.H{"message": "album not found"})
+}
+
 func main() {
 	// gin.SetMode(gin.ReleaseMode)
+	gin.SetMode(gin.DebugMode)
 	router := gin.Default()
 	router.GET("/albums", getAlbums)
 	router.POST("/albums", postAlbum)
+	router.GET("/albums/:id", GetUserById)
 	router.Run("localhost:8080")
 	f()
 }
