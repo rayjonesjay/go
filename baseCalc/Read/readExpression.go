@@ -145,12 +145,8 @@ func arrowDirection(left, arrow, right string) (from, to string) {
 }
 
 func IsDigitRange(s string) bool {
-	intS := stringToInt(s)
-<<<<<<< HEAD
-	if intS >= 2 && intS <= 10	{
-=======
+	intS := stringToInt(s)	
 	if intS >= 2 && intS <= 10 {
->>>>>>> 343dc82775989efcc55a793f2e1cb7712b47726d
 		return true
 	}
 	return false
