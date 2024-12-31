@@ -40,7 +40,7 @@ The payload contains claims. Claims are statements about and entity (typicall, t
 
 Registered claims include standard fields like issuer (`iss`), subject (`sub`), audience (`aud`), expiration time (`exp`) and issued at(`iat`).
 
-```js
+```javascript
 {
     "sub": "1234567890"
     "name": "Foo Bar"
@@ -55,7 +55,7 @@ It ensures the integrity and authenticity of the token.
 
 example (using HMAC SHA256)
 
-```js
+```javascript
 HMACSHA256(
     base64UrlEncode(header) + "." + base64UrlEncode(payload),
     secret

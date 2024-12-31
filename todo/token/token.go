@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"time"
 
-	// "github.com/golang-jwt/jwt"
-	// "github.com/golang-jwt/jwt"
 	"github.com/golang-jwt/jwt/v5"
 )
 
@@ -39,4 +37,25 @@ func getRole(username string) string {
 		return "senior"
 	}
 	return "employee"
+}
+
+// Function to verify JWT tokens
+func VerifyToken(tokenString string) (*jwt.Token, error) {
+	// Parse the token with the secret key
+	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+		return SecretKey, nil
+	})
+
+	// Check for verification errors
+	if err != nil {
+		return nil, err
+	}
+
+	// Check if the token is valid
+	if !token.Valid {
+		return nil, fmt.Errorf("invalid token")
+	}
+
+	// Return the verified token
+	return token, nil
 }

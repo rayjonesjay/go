@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../static/styles.css">
+    <title>Todo App</title>
+</head>
+<body>
+    {{ if not .LoggedIn }}
+        <h1>PLease login here</h1>
+        <!-- Login form -->
+        <form action="/login" method="post">
+            <input type="text" name="username" placeholder="Username" required>
+            <input type="password" name="password" placeholder="Password" required>
+            <button type="submit">Login</button>
+        </form>
+    {{ else }}
+        <h1>Welcome, {{ .types.LoggedInUser }} </h1>
+        <!-- Add Todo Form  will be only visible to senior-->
+        {{ if eq .Role "senior" }}
+        <form action="/add" method="post">
+            <input type="text" name="todo" placeholder="Enter a new task" required>
+            <button type="submit">Add Todo</button>
+        </form>
+        {{ else }}
+        <p>employees can't add todos</p>
+        {{ end }}
+
+        <!-- Todo List -->
+        <ol>
+            <p>Tasks</p>
+            {{ range $index, $todo := .Todos }}
+                <li>
+                    <form action="/toggle" method="post" style="display: inline;">
+                        <input type="hidden" name="index" value="{{ $index }}">
+                        <input type="checkbox" {{ if $todo.Done }}checked{{ end }} onchange="this.form.submit()">
+                    </form>
+                    {{ if $todo.Done }}
+                        <del>{{ $todo.Text }}</del>
+                    {{ else }}
+                        {{ $todo.Text }}
+                    {{ end }}
+                </li>
+            {{ end }}
+        </ol>
+
+        <!-- Log out -->
+         <form action="/logout" method="GET">
+            <button type="submit">LogOut</button>
+         </form>
+    {{ end }}
+</body>
+</html>
