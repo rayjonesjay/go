@@ -56,7 +56,7 @@ func RoutesInitializer() {
 			}
 			types.LoggedInUser = username
 			fmt.Printf("token created %q\n", tokenString)
-			c.SetCookie("token", tokenString, 9, "/", "localhost", false, true)
+			c.SetCookie("token", tokenString, 360, "/", "localhost", false, true)
 			c.Redirect(http.StatusSeeOther, "/") // redirect to home page
 		} else {
 			c.String(http.StatusUnauthorized, "Invalid credentials")
