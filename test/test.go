@@ -8,7 +8,7 @@ import (
 
 func ping(domain string) bool {
 	client := http.Client{
-		Timeout: time.Second * 1,
+		Timeout: time.Second * 30,
 	}
 
 	// send a head request to avoid downloading the entire content

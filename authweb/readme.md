@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ## authweb
 auth web aims to teach you on how to authenticate and handle authentication and session tokens
 when signing in or login in a website.
@@ -35,3 +36,8 @@ go get -u github.com/gin-gonic/gin # Web framework
 go get -u github.com/dgrijalva/jwt-go # JSON Web Tokens (JWT) library
 ```
 See ![main](main.go) for the backend API
+=======
+### authentication in web apps
+
+The authentication session of a web app is the heart of its defense against malicious threats.
+>>>>>>> 65c7bc714d5b57f3e38a93f2731ef9c1acd071a0
